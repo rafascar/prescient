@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Prescient - The context-aware home monitoring and control central</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="http://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <script src="js/script.js"></script>
+    </head>
+
+    <body>
+        <div data-role="page">  
+            <div data-role="header">
+                <h1>Current Data</h1>  
+            </div>
+            <button onclick="showTemperature()">Try it</button>
+
+            <div data-role="main" class="ui-content">
+                <p id="showTemp"></p>
+
+            </div>
+
+            <a href="#myPopup" data-rel="popup" class="ui-btn">Change stuff</a>
+
+            <div data-role="popup" id="myPopup" class="ui-content" style="min-width:350px;">
+                <form method="post" action="demoform.asp">
+                    <div>
+                        <h3>Change Environment</h3>
+                        <div data-role="rangeslider" data-track-theme="b" data-theme="a" data-highlight="true">
+                            <label for="desired_lum">Luminosity:</label>
+                            <input type="range"
+                                   name="desired_lum"
+                                   value="70"
+                                   min="0"
+                                   max="100"
+                                   step="5"
+                                   >
+                        </div>
+
+                        <div data-role="rangeslider" data-track-theme="b" data-theme="a" data-highlight="true">
+                            <label for="desired_temp">Temperature:</label>
+                            <input type="range"
+                                   name="desired_temp"
+                                   value="23"
+                                   min="16"
+                                   max="30"
+                                   step="1"
+                                   >
+                        </div>
+
+                        <input type="button" value="Apply Changes">
+                    </div>
+                </form>
+            </div>
+
+            <div data-role="footer">
+
+            </div>
+        </div> 
+
+        </div>
+    </body>
+</html>

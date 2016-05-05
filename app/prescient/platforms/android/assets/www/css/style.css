@@ -1,0 +1,27 @@
+div.ui-block-a p {
+    text-align: left;
+    color: #bbb;
+    font: helvetica;
+    font-size: large;
+    font-weight: bold
+}
+
+div.ui-block-b p {
+    text-align: center;
+    color: #BBB;
+    font-size: large;
+    font-weight: bold
+}
+
+.ui-slider-range {
+    background: #88ac0b;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #000;
+    margin: 1em 0;
+    padding: 0; 
+}

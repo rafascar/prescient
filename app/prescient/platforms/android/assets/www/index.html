@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Prescient - The context-aware home monitoring and control central</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="http://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    </head>
+
+    <body>
+        <script src="/js/script.js"></script>
+        <div data-role="page" data-theme="b" id="pageHome">
+            <div data-role="header">
+                <h1>Prescient</h1>
+                <!--NAVIGATION BAR-->
+                <div data-role="navbar" class="ui-btn-active ui-state-persist">
+                    <ul>
+                        <li id="tabHome"><a href="#pageHome" data-icon="home">HOME</a></li>
+                        <li id="tabContext"><a href="#pageContext" data-icon="location">CONTEXT</a></li>
+                        <li id="tabEnergy"><a href="#pageEnergy" data-icon="info">ENERGY</a></li>
+                        <li id="tabHistory"><a href="#pageHistory" data-icon="calendar">HISTORY</a></li>
+                    </ul>
+                </div>
+            </div>
+        
+        </div>
+        
+        <div data-role="page" data-theme="b" id="pageContext">
+            <div data-role="header">
+                <h1>Prescient</h1>
+                <!--NAVIGATION BAR-->
+                <div data-role="navbar" class="ui-btn-active ui-state-persist">
+                    <ul>
+                        <li id="tabHome"><a href="#pageHome" data-icon="home">HOME</a></li>
+                        <li id="tabContext"><a href="#pageContext" data-icon="location">CONTEXT</a></li>
+                        <li id="tabEnergy"><a href="#pageEnergy" data-icon="info">ENERGY</a></li>
+                        <li id="tabHistory"><a href="#pageHistory" data-icon="calendar">HISTORY</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- AC SETTINGS-->
+            <div data-role="main" class="ui-content">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <p>Ar Conditioning:</p>
+                    </div>
+                    <div class="ui-block-b">
+                        <p id="showAC"></p>   
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!-- INTERNAL TEMPERATURE SETTINGS-->
+            <div data-role="main" class="ui-content">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <p>Internal Temperature:</p>
+                    </div>
+                    <div class="ui-block-b">
+                        <p id="showInTemp"></p>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!--EXTERNAL TEMPERATURE SETTINGS-->
+            <div data-role="main" class="ui-content">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <p>External Temperature:</p>
+                    </div>
+                    <div class="ui-block-b">
+                        <p id="showExTemp"></p>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!--EXTERNAL TEMPERATURE SETTINGS-->
+            <div data-role="main" class="ui-content">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <p>External Temperature:</p>
+                    </div>
+                    <div class="ui-block-b">
+                        <p id="showExTemp"></p>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!--EXTERNAL TEMPERATURE SETTINGS-->
+            <div data-role="main" class="ui-content">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <p>External Temperature:</p>
+                    </div>
+                    <div class="ui-block-b">
+                        <p id="showExTemp"></p>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!--EXTERNAL TEMPERATURE SETTINGS-->
+            <div data-role="main" class="ui-content">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <p>External Temperature:</p>
+                    </div>
+                    <div class="ui-block-b">
+                        <p id="showExTemp"></p>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!--EXTERNAL TEMPERATURE SETTINGS-->
+            <div data-role="main" class="ui-content">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <p>External Temperature:</p>
+                    </div>
+                    <div class="ui-block-b">
+                        <p id="showExTemp"></p>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!--EXTERNAL TEMPERATURE SETTINGS-->
+            <div data-role="main" class="ui-content">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <p>External Temperature:</p>
+                    </div>
+                    <div class="ui-block-b">
+                        <p id="showExTemp"></p>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <a href="#myPopup" data-rel="popup" class="ui-btn">Change stuff</a>
+
+            <div data-role="popup" id="myPopup" class="ui-content" style="min-width:350px;">
+                <form method="post" action="demoform.asp">
+                    <div>
+                        <h3>Change Environment</h3>
+                        <div data-role="main">
+                            <label for="desired_lum">Luminosity:</label>
+                            <input type="range"
+                                   name="desired_lum"
+                                   value="70"
+                                   min="0"
+                                   max="100"
+                                   step="5"
+                                   data-highlight="true"
+                                   >
+
+                        </div>
+
+                        <div data-role="main">
+                            <label for="desired_temp">Temperature:</label>
+                            <input type="range"
+                                   name="desired_temp"
+                                   value="23"
+                                   min="16"
+                                   max="30"
+                                   step="1"
+                                   data-highlight="true"
+                                   >
+                        </div>
+
+                        <input type="button" value="Apply Changes">
+                    </div>
+                </form>
+            </div>
+
+            <div data-role="footer">
+
+            </div>
+        </div> 
+
+        </div>
+    </body>
+</html>
