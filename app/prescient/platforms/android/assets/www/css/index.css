@@ -1,12 +1,11 @@
-div.ui-block-a p {
+div.ui-block-a div {
     text-align: left;
     color: #bbb;
-    font: helvetica;
     font-size: large;
     font-weight: bold
 }
 
-div.ui-block-b p {
+div.ui-block-b div {
     text-align: center;
     color: #BBB;
     font-size: large;
@@ -24,4 +23,12 @@ hr {
     border-top: 1px solid #000;
     margin: 1em 0;
     padding: 0; 
+}
+
+#welcome {
+    font-size: 36pt;
+}
+
+#subtitle {
+    font-size: 20pt;
 }

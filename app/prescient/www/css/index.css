@@ -1,11 +1,11 @@
-div.ui-block-a p {
+div.ui-block-a div {
     text-align: left;
     color: #bbb;
     font-size: large;
     font-weight: bold
 }
 
-div.ui-block-b p {
+div.ui-block-b div {
     text-align: center;
     color: #BBB;
     font-size: large;

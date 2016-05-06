@@ -7,14 +7,22 @@
         <script src="http://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
         <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <script src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>  
+        <script src= "https://cdn.zingchart.com/zingchart.min.js"></script>
+        <script> zingchart.MODULESDIR = "https://cdn.zingchart.com/modules/";
+            ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9","ee6b7db5b51705a13dc2339db3edaf6d"];</script>
+
+
     </head>
 
     <body>
-        <script src="/js/script.js"></script>
+
+
+        <!--HOME PAGE-->
         <div data-role="page" data-theme="b" id="pageHome">
             <div data-role="header">
-                <h1>Prescient</h1>
+                <h1>Prescient - Home</h1>
                 <!--NAVIGATION BAR-->
                 <div data-role="navbar" class="ui-btn-active ui-state-persist">
                     <ul>
@@ -22,15 +30,27 @@
                         <li id="tabContext"><a href="#pageContext" data-icon="location">CONTEXT</a></li>
                         <li id="tabEnergy"><a href="#pageEnergy" data-icon="info">ENERGY</a></li>
                         <li id="tabHistory"><a href="#pageHistory" data-icon="calendar">HISTORY</a></li>
-                    </ul>
+                    </ul>            
                 </div>
             </div>
-        
+            <center>
+                <p id="welcome">
+                    WELCOME TO PRESCIENT                
+                </p>
+            </center>
+            <center><img src="img/logoBlue.png" alt="Welcome"/></center>
+            <center>
+                <p id="subtitle">
+                    The context-aware home monitoring and control central
+                </p>   
+            </center>
         </div>
-        
+
+
+        <!--CONTEXT PAGE-->
         <div data-role="page" data-theme="b" id="pageContext">
             <div data-role="header">
-                <h1>Prescient</h1>
+                <h1>Prescient - Context</h1>
                 <!--NAVIGATION BAR-->
                 <div data-role="navbar" class="ui-btn-active ui-state-persist">
                     <ul>
@@ -44,100 +64,110 @@
 
             <!-- AC SETTINGS-->
             <div data-role="main" class="ui-content">
+                <hr>
+                <h2><center>Temperature</center></h2>
+                <hr>
                 <div class="ui-grid-a">
                     <div class="ui-block-a">
-                        <p>Ar Conditioning:</p>
+                        <div>Ar Conditioning:</div>
                     </div>
                     <div class="ui-block-b">
-                        <p id="showAC"></p>   
+                        <div id="showAC"></div>   
                     </div>
                 </div>
             </div>
-            <hr>
+
             <!-- INTERNAL TEMPERATURE SETTINGS-->
             <div data-role="main" class="ui-content">
                 <div class="ui-grid-a">
                     <div class="ui-block-a">
-                        <p>Internal Temperature:</p>
+                        <div>Internal Temperature:</div>
                     </div>
                     <div class="ui-block-b">
-                        <p id="showInTemp"></p>
+                        <div id="showInTemp"></div>
                     </div>
                 </div>
             </div>
-            <hr>
+
             <!--EXTERNAL TEMPERATURE SETTINGS-->
             <div data-role="main" class="ui-content">
                 <div class="ui-grid-a">
                     <div class="ui-block-a">
-                        <p>External Temperature:</p>
+                        <div>External Temperature:</div>
                     </div>
                     <div class="ui-block-b">
-                        <p id="showExTemp"></p>
+                        <div id="showExTemp"></div>
                     </div>
                 </div>
             </div>
-            <hr>
-            <!--EXTERNAL TEMPERATURE SETTINGS-->
+
+            <!--LAMP DIMMER SETTINGS-->
+
+            <div data-role="main" class="ui-content">
+                <hr>
+                <h2><center>Lighting</center></h2>
+                <hr>
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <div>Lamp Dimmer:</div>
+                    </div>
+                    <div class="ui-block-b">
+                        <div id="showLampDimmer"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!--INTERNAL LIGHTING SETTINGS-->
             <div data-role="main" class="ui-content">
                 <div class="ui-grid-a">
                     <div class="ui-block-a">
-                        <p>External Temperature:</p>
+                        <div>Internal Lighting</div>
                     </div>
                     <div class="ui-block-b">
-                        <p id="showExTemp"></p>
+                        <div id="showInLight"></div>
                     </div>
                 </div>
             </div>
-            <hr>
-            <!--EXTERNAL TEMPERATURE SETTINGS-->
+
+            <!--EXTERNAL LIGHTING SETTINGS-->
             <div data-role="main" class="ui-content">
                 <div class="ui-grid-a">
                     <div class="ui-block-a">
-                        <p>External Temperature:</p>
+                        <div>External Lighting:</div>
                     </div>
                     <div class="ui-block-b">
-                        <p id="showExTemp"></p>
+                        <div id="showExLight"></div>
                     </div>
                 </div>
             </div>
-            <hr>
-            <!--EXTERNAL TEMPERATURE SETTINGS-->
+
+            <!--AIR HUMIDITY SETTINGS-->
+            <div data-role="main" class="ui-content">
+                <hr>
+                <h2><center>Air Quality</center></h2>
+                <hr>
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <div>Air Humidity:</div>
+                    </div>
+                    <div class="ui-block-b">
+                        <div id="showAirHum"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!--AIR CO2 SETTINGS-->
             <div data-role="main" class="ui-content">
                 <div class="ui-grid-a">
                     <div class="ui-block-a">
-                        <p>External Temperature:</p>
+                        <div>CO&#x2082;:</div>
                     </div>
                     <div class="ui-block-b">
-                        <p id="showExTemp"></p>
+                        <div id="showAirCO2"></div>
                     </div>
                 </div>
             </div>
-            <hr>
-            <!--EXTERNAL TEMPERATURE SETTINGS-->
-            <div data-role="main" class="ui-content">
-                <div class="ui-grid-a">
-                    <div class="ui-block-a">
-                        <p>External Temperature:</p>
-                    </div>
-                    <div class="ui-block-b">
-                        <p id="showExTemp"></p>
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <!--EXTERNAL TEMPERATURE SETTINGS-->
-            <div data-role="main" class="ui-content">
-                <div class="ui-grid-a">
-                    <div class="ui-block-a">
-                        <p>External Temperature:</p>
-                    </div>
-                    <div class="ui-block-b">
-                        <p id="showExTemp"></p>
-                    </div>
-                </div>
-            </div>
-            <hr>
+
             <a href="#myPopup" data-rel="popup" class="ui-btn">Change stuff</a>
 
             <div data-role="popup" id="myPopup" class="ui-content" style="min-width:350px;">
@@ -177,8 +207,133 @@
             <div data-role="footer">
 
             </div>
-        </div> 
-
         </div>
-    </body>
-</html>
+
+        <!--ENERGY PAGE-->
+        <div data-role="page" data-theme="b" id="pageEnergy">
+            <div data-role="header">
+                <h1>Prescient - Energy</h1>
+                <!--NAVIGATION BAR-->
+                <div data-role="navbar" class="ui-btn-active ui-state-persist">
+                    <ul>
+                        <li id="tabHome"><a href="#pageHome" data-icon="home">HOME</a></li>
+                        <li id="tabContext"><a href="#pageContext" data-icon="location">CONTEXT</a></li>
+                        <li id="tabEnergy"><a href="#pageEnergy" data-icon="info">ENERGY</a></li>
+                        <li id="tabHistory"><a href="#pageHistory" data-icon="calendar">HISTORY</a></li>
+                    </ul>            
+                </div>
+
+                <!--TOTAL ENERGY CONSUMPTION-->
+                <div data-role="main" class="ui-content">
+                    <hr>
+                    <h1><center>Current Consumption</center></h1>
+                    <hr>
+                    <center>
+                        <h2>
+                            <div id="totalConsumption"></div>
+                        </h2>
+                    </center>
+
+                </div>
+
+                <!--LAMP 1 ENERGY CONSUMPTION-->
+                <div data-role="main" class="ui-content">
+                    <hr>
+                    <h2><center>Lighting</center></h2>
+                    <hr>
+                    <div class="ui-grid-a">
+                        <div class="ui-block-a">
+                            <div>Lamp 1:</div>
+                        </div>
+                        <div class="ui-block-b">
+                            <div id="showAC"></div>   
+                        </div>
+                    </div>
+                </div>
+
+                <!--LAMP 2 ENERGY CONSUMPTION-->
+                <div data-role="main" class="ui-content">
+                    <div class="ui-grid-a">
+                        <div class="ui-block-a">
+                            <div>Lamp 2:</div>
+                        </div>
+                        <div class="ui-block-b">
+                            <div id="showInTemp"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--LAMP 3 ENERGY CONSUMPTION-->
+                <div data-role="main" class="ui-content">
+                    <div class="ui-grid-a">
+                        <div class="ui-block-a">
+                            <div>Lamp 3:</div>
+                        </div>
+                        <div class="ui-block-b">
+                            <div id="showExTemp"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--AC CONSUMPTION-->
+                <div data-role="main" class="ui-content">
+                    <hr>
+                    <h2><center>Air Conditioning</center></h2>
+                    <hr>
+                    <div class="ui-grid-a">
+                        <div class="ui-block-a">
+                            <div>AC 1:</div>
+                        </div>
+                        <div class="ui-block-b">
+                            <div id="showAC"></div>   
+                        </div>
+                    </div>
+                </div>
+
+                <!--SOCKET ENERGY CONSUMPTION-->
+                <div data-role="main" class="ui-content">
+                    <hr>
+                    <h2><center>Lighting</center></h2>
+                    <hr>
+                    <div class="ui-grid-a">
+                        <div class="ui-block-a">
+                            <div>Socket 1:</div>
+                        </div>
+                        <div class="ui-block-b">
+                            <div id="showAC"></div>   
+                        </div>
+                    </div>
+                </div>
+
+                <div data-role="main" class="ui-content">
+                    <center><h1>Visualization</h1>
+                        <div id='myChart' style="width: 100%; height: 250px;"></div>
+                        </div>
+                </div>
+
+            </div>
+
+            <!--HISTORY PAGE-->
+            <div data-role="page" data-theme="b" id="pageHistory">
+                <div data-role="header">
+                    <h1>Prescient - History</h1>
+                    <!--NAVIGATION BAR-->
+                    <div data-role="navbar" class="ui-btn-active ui-state-persist">
+                        <ul>
+                            <li id="tabHome"><a href="#pageHome" data-icon="home">HOME</a></li>
+                            <li id="tabContext"><a href="#pageContext" data-icon="location">CONTEXT</a></li>
+                            <li id="tabEnergy"><a href="#pageEnergy" data-icon="info">ENERGY</a></li>
+                            <li id="tabHistory"><a href="#pageHistory" data-icon="calendar">HISTORY</a></li>
+                        </ul>            
+                    </div>
+                </div>
+
+                <div data-role="main" class="ui-content">
+                    <div id="chart"></div>
+                </div>
+            </div>
+                <script type="text/javascript" src="cordova.js"></script>
+                <script type="text/javascript" src="js/index.js"></script>
+
+                </body>
+            </html>
