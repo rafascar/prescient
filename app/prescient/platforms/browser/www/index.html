@@ -4,14 +4,19 @@
         <title>Prescient - The context-aware home monitoring and control central</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="http://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
-        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+        <!--        <script src="http://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>-->
+        <script src="js/jquery-1.12.3.min.js"></script>
+        <!--        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">-->
+        <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css">
+        <!--        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>-->
+        <script src="js/jquery.mobile-1.4.5.min.js"></script>
         <link rel="stylesheet" type="text/css" href="css/index.css">
-        <script src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>  
-        <script src= "https://cdn.zingchart.com/zingchart.min.js"></script>
-        <script> zingchart.MODULESDIR = "https://cdn.zingchart.com/modules/";
-            ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9","ee6b7db5b51705a13dc2339db3edaf6d"];</script>
+        <script src="js/zingchart.min.js"></script>
+        <!--
+<script src= "https://cdn.zingchart.com/zingchart.min.js"></script>
+<script> zingchart.MODULESDIR = "https://cdn.zingchart.com/modules/";
+ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9","ee6b7db5b51705a13dc2339db3edaf6d"];</script>
+-->
 
 
     </head>
@@ -20,7 +25,7 @@
 
 
         <!--HOME PAGE-->
-        <div data-role="page" data-theme="b" id="pageHome">
+        <div data-role="page" data-theme="b" id="pageHome"> 
             <div data-role="header">
                 <h1>Prescient - Home</h1>
                 <!--NAVIGATION BAR-->
@@ -312,42 +317,49 @@
                         <div id='myChart' style="width: 100%; height: 250px;"></div>
                         </div>
                 </div>
-                
+
                 <a href="#energyPopup" data-rel="popup" class="ui-btn">Turn On/Off</a>
 
-            <div data-role="popup" id="energyPopup" class="ui-content" style="min-width:350px;">
-                <form method="post" action="demoform.asp">
-                    <div>
-                        <h3>Change Environment</h3>
-                        <div data-role="main">
-                            <label for="desired_lum">Luminosity:</label>
-                            <input type="range"
-                                   name="desired_lum"
-                                   value="70"
-                                   min="0"
-                                   max="100"
-                                   step="5"
-                                   data-highlight="true"
-                                   >
+                <div data-role="popup" id="energyPopup" class="ui-content" style="min-width:350px;">
+                    <form method="post" action="demoform.asp">
+                        <div>
+                            <h3>Turn On/Off</h3>
+                            <div data-role="main">
+                                <label for="lamp1">Lamp 1:</label>
+                                <select name="lamp1" id="lamp1" data-role="slider">
+                                    <option value="off">Off</option>
+                                    <option value="on">On</option>
+                                </select> 
 
+                                <label for="lamp2">Lamp 2:</label>
+                                <select name="lamp2" id="lamp2" data-role="slider">
+                                    <option value="off">Off</option>
+                                    <option value="on">On</option>
+                                </select> 
+                                <label for="lamp3">Lamp 3:</label>
+                                <select name="lamp3" id="lamp3" data-role="slider">
+                                    <option value="off">Off</option>
+                                    <option value="on">On</option>
+                                </select> 
+
+                                <label for="acSwitch">AC:</label>
+                                <select name="acSwitch" id="acSwitch" data-role="slider">
+                                    <option value="off">Off</option>
+                                    <option value="on">On</option>
+                                </select> 
+
+                                <label for="socket1">Socket 1:</label>
+                                <select name="socket1" id="socket1" data-role="slider">
+                                    <option value="off">Off</option>
+                                    <option value="on">On</option>
+                                </select> 
+
+                            </div>
+
+                            <input type="button" value="Apply Changes">
                         </div>
-
-                        <div data-role="main">
-                            <label for="desired_temp">Temperature:</label>
-                            <input type="range"
-                                   name="desired_temp"
-                                   value="23"
-                                   min="16"
-                                   max="30"
-                                   step="1"
-                                   data-highlight="true"
-                                   >
-                        </div>
-
-                        <input type="button" value="Apply Changes">
-                    </div>
-                </form>
-            </div>
+                    </form>
+                </div>
 
             </div>
 
@@ -367,11 +379,44 @@
                 </div>
 
                 <div data-role="main" class="ui-content">
-                    <div id="chart"></div>
-                </div>
-            </div>
-            <script type="text/javascript" src="cordova.js"></script>
-            <script type="text/javascript" src="js/index.js"></script>
+                    <hr>
+                    <center><h2>Total Energy Consumption</h2>
+                        <hr>
+                        <div id='energyChart' style="width: 100%; height: 250px;"></div>
+                        </div>
 
-            </body>
-        </html>
+
+                    <div data-role="main" class="ui-content">
+                        <hr>
+                        <center><h2>Temperature</h2>
+                            <hr>
+                            <div id='tempChart' style="width: 100%; height: 250px;"></div>
+                            </div>
+
+
+                        <div data-role="main" class="ui-content">
+                            <hr>
+                            <center><h2>Lighting</h2>
+                                <hr>
+                                <div id='lightChart' style="width: 100%; height: 250px;"></div>
+                                </div>
+
+
+                            <div data-role="main" class="ui-content">
+                                <hr>
+                                <center><h2>Air Quality</h2>
+                                    <hr>
+                                    <div id='airChart' style="width: 100%; height: 250px;"></div>
+                                    </div>
+
+                            </div>
+
+
+
+
+                        </div>
+                        <script type="text/javascript" src="cordova.js"></script>
+                        <script type="text/javascript" src="js/index.js"></script>
+
+                        </body>
+                    </html>
