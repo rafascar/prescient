@@ -116,6 +116,14 @@ zingchart.render({
 });
 
 
+zingchart.render({ 
+	id : 'myOtherChart', 
+	output:"svg",
+	dataurl : "../iot.json",
+	height : 250, 
+	width: "100%" 
+});
+
 
 zingchart.THEME="classic";
 var myConfig = 

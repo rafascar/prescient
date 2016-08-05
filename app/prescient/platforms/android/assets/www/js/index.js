@@ -78,200 +78,35 @@ function getTotalConsumption() {
 }
 var updateTotalConsumption = setInterval(getTotalConsumption, 1000);
 
+window.feed = function(callback) {
+    var tick = {};
+    tick.plot0 = parseInt(10+900*Math.random(), 10);
+    callback(JSON.stringify(tick));
+};
 
 zingchart.THEME="classic";
-var myConfig = 
-    {
-        "type": "bar",
-        "stacked": false,
-        "background-color": "transparent",
-        "legend": {
-            "margin":"5% auto auto auto",
-            "layout": "float",
-            "font-family": "arial",
-            "font-size": "10px",
-            "background-color": "#1D2629",
-            "border-color": "#808080",
-            "toggle-action": "remove",
-            "align":"center",
-            "item": {
-                "marker-style": "match",
-                "font-color": "#ffffff"
-            }
-        },
-        "plot": {
-            "tooltip-text": "%t: %v",
-            "active-area":true,
-            "animation": {
-                "speed": 0.5,
-                "effect": 4
-            },
-            "shadow": false
-        },
-        "plotarea": {
-            "margin": "10% 8% 14% 12%"
-        },
-        "series": [
-            {
-                "text": "AC",
-                "values": [
-                    44,
-                    40,
-                    44,
-                    37,
-                    35,
-                    46
-                ],
-                "line-width": "2px",
-                "line-color": "#8DD62E",
-                "background-color": "#8DD62E",
-                "marker": {
-                    "type": "circle",
-                    "size": "4px",
-                    "border-width": "0px",
-                    "background-color": "#8DD62E",
-                    "border-color": "#8DD62E",
-                    "shadow": false
-                }
-            },
-            {
-                "text": "Lamp 3",
-                "values": [
-                    40,
-                    32,
-                    37,
-                    27,
-                    27,
-                    32
-                ],
-                "line-width": "2px",
-                "line-color": "#FF006F",
-                "background-color": "#FF006F",
-                "marker": {
-                    "type": "circle",
-                    "size": "4px",
-                    "border-width": "0px",
-                    "background-color": "#FF006F",
-                    "border-color": "#FF006F",
-                    "shadow": false
-                }
-            },
-            {
-                "text": "Lamp 2",
-                "values": [
-                    37,
-                    24,
-                    26,
-                    17,
-                    19,
-                    17
-                ],
-                "line-width": "2px",
-                "line-color": "#00D3E6",
-                "background-color": "#00D3E6",
-                "marker": {
-                    "type": "circle",
-                    "size": "4px",
-                    "border-width": "0px",
-                    "background-color": "#00D3E6",
-                    "border-color": "#00D3E6",
-                    "shadow": false
-                }
-            },
-            {
-                "text": "Lamp 1",
-                "values": [
-                    20,
-                    13,
-                    12,
-                    8,
-                    15,
-                    9
-                ],
-                "line-width": "2px",
-                "line-color": "#FFD540",
-                "background-color": "#FFD540",
-                "marker": {
-                    "type": "circle",
-                    "size": "4px",
-                    "border-width": "0px",
-                    "background-color": "#FFD540",
-                    "border-color": "#FFD540",
-                    "shadow": false
-                }
-            }
-        ],
-        "scale-x": {
-            "values": [
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun"
-            ],
-            "line-color": "#808080",
-            "line-width": "1px",
-            "line-style": "solid",
-            "guide": {
-                "line-color": "#808080",
-                "line-style": "solid"
-            },
-            "tick": {
-                "line-width": "1px",
-                "line-color": "#808080"
-            },
-            "item": {
-                "font-size": "12px",
-                "font-color": "#808080",
-                "font-weight": "normal",
-                "font-family": "arial",
-                "offset-y": "5%"
-            }
-        },
-        "scale-y": {
-            "values": "0:150:50",
-            "format": "%v kW/h",
-            "line-width": "1px",
-            "line-color": "#808080",
-            "guide": {
-                "line-color": "#808080",
-                "alpha": 0.1,
-                "line-style": "solid"
-            },
-            "tick": {
-                "line-width": "1px",
-                "line-color": "#808080"
-            },
-            "item": {
-                "font-size": "12px",
-                "font-color": "#808080",
-                "font-weight": "normal",
-                "font-family": "arial",
-                "offset-x": "-5%"
-            }
-        },
-        "crosshair-x": {
-            "line-width": "2px",
-            "line-color": "#FFFFFF",
-            "offset-y": "10%",
-            "marker": {
-                "visible": false
-            },
-            "plot-label": {
-                "text": "<strong>%t</strong>: %v kW/h",
-                "font-color": "#000000",
-                "font-family": "arial"
-            },
-            "scale-label": {
-                "background-transparent": true,
-                "offset-y": "5%"
-            }
-        },
-        "tooltip": {
-            "visible": false
+var myConfig ={
+    type:"line",
+    plot:{
+      aspect:"spline"  
+    },
+    "background-color": "transparent",
+    "refresh":{
+        "type":"feed",
+        "transport":"js",
+        "url":"feed()",
+        "max-ticks":600,
+        "interval":100,
+        resetTimeout:80000000,
+        "adjust-scale":true
+    },
+    series:[
+        {
+            values:[]
         }
-    };
+    ]
+};
+
 
 zingchart.render({ 
     id : 'myChart', 
@@ -280,6 +115,14 @@ zingchart.render({
     width: "100%" 
 });
 
+
+zingchart.render({ 
+	id : 'myOtherChart', 
+	output:"svg",
+	dataurl : "../iot.json",
+	height : 250, 
+	width: "100%" 
+});
 
 
 zingchart.THEME="classic";
