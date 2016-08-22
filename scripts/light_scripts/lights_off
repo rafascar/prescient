@@ -1,0 +1,12 @@
+#!/usr/bin/env python3
+
+from gateway_test import *
+from time import sleep
+
+debug(True)
+for i in range(5):
+    off(b'A0')
+    time.sleep(0.3)
+    off(b'A1')
+    time.sleep(0.3)
+debug(False)
