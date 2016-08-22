@@ -6,6 +6,11 @@ import json
 app = Flask(__name__)
 cors = CORS(app, resources={r"/foo": {"origins": "localhost"}})
 
+@app.route("/")
+def home():
+    return ("Hello World!")
+
+
 @app.route("/test.py", methods=['GET'])
 @cross_origin(origin='localhost', headers=['Content- Type', 'Authorization'])
 def get_x():
@@ -23,4 +28,4 @@ def get_x():
         return ("Error")
 
 if __name__ == "__main__":
-    app.run(port=8080, debug=True)
+    app.run(host= '0.0.0.0', port=8080, debug=True)

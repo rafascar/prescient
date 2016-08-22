@@ -3,7 +3,7 @@ $(function() {
         //document.getElementById("demo").innerHTML = "Hello World";
         $.ajax({
             type: "GET",
-            url: "http://127.0.0.1:8080/test.py",
+            url: "http://150.162.62.244:8080/test.py",
             data: {turnOn: "On"},
             success: function(data) {
                 $('#demo').text(data);
@@ -22,7 +22,7 @@ $(function() {
         //document.getElementById("demo").innerHTML = "Hello World";
         $.ajax({
             type: "GET",
-            url: "http://127.0.0.1:8080/test.py",
+            url: "http://150.162.62.244:8080/test.py",
             data: {turnOn: "Off"},
             success: function(data) {
                 $('#demo').text(data);
