@@ -11,7 +11,8 @@ function get_subnet ()
 
 function find ()
 {
-    nmap -sn $(get_subnet) | grep -c -i $MAC_ADDR
+    nmap -sn $(get_subnet) > temp
+    grep -c -i $MAC_ADDR  temp
 }
 
 if [ "$(id -u)" != "0" ]; then
@@ -21,7 +22,7 @@ else
         exit 1
     else
         if [[ "$(find)" == 1 ]]; then
-            echo "1"
+            echo "$(grep -B2 ${MAC_ADDR} temp | awk '/scan report/ {print $5}')"
         else
             echo "0"
         fi
