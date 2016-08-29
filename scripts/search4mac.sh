@@ -11,8 +11,7 @@ function get_subnet ()
 
 function find ()
 {
-    nmap -sn $(get_subnet) > temp
-    grep -c -i $MAC_ADDR  temp
+    nmap -sn $(get_subnet) | grep -c -i $MAC_ADDR 
 }
 
 if [ "$(id -u)" != "0" ]; then
