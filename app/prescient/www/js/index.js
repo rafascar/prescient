@@ -1,3 +1,20 @@
+$("#A0").click(function() {
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:8080/test.py",
+        data: {turnOn: $("#flip-1").val()},
+        success: function(data) {
+            $('#demo').text(data);
+            console.log("There is a response"); 
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            $('#demo').text("An Error Occurred");
+            console.log("There is no response"); 
+        }
+    });
+})
+
+
 function getACTemperature() {
     var temp = 16; // Later it will be the data from the sensor
     var unit = " \xB0C";
@@ -88,7 +105,7 @@ zingchart.THEME="classic";
 var myConfig ={
     type:"line",
     plot:{
-      aspect:"spline"  
+        aspect:"spline"  
     },
     "background-color": "transparent",
     "refresh":{
@@ -117,11 +134,11 @@ zingchart.render({
 
 
 zingchart.render({ 
-	id : 'myOtherChart', 
-	output:"svg",
-	dataurl : "../iot.json",
-	height : 250, 
-	width: "100%" 
+    id : 'myOtherChart', 
+    output:"svg",
+    dataurl : "../iot.json",
+    height : 250, 
+    width: "100%" 
 });
 
 

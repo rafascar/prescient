@@ -4,26 +4,14 @@
         <title>Prescient - The context-aware home monitoring and control central</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!--        <script src="http://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>-->
         <script src="js/jquery-1.12.3.min.js"></script>
-        <!--        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">-->
         <link rel="stylesheet" href="css/jquery.mobile-1.4.5.css">
-        <!--        <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>-->
         <script src="js/jquery.mobile-1.4.5.min.js"></script>
         <link rel="stylesheet" type="text/css" href="css/index.css">
         <script src="js/zingchart.min.js"></script>
-        <!--
-<script src= "https://cdn.zingchart.com/zingchart.min.js"></script>
-<script> zingchart.MODULESDIR = "https://cdn.zingchart.com/modules/";
-ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9","ee6b7db5b51705a13dc2339db3edaf6d"];</script>
--->
-
-
     </head>
 
     <body>
-
-
         <!--HOME PAGE-->
         <div data-role="page" data-theme="b" id="pageHome"> 
             <div data-role="header">
@@ -179,6 +167,7 @@ ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9","ee6b7db5b51705a13dc2339db3edaf
                 <form method="post" action="demoform.asp">
                     <div>
                         <h3>Change Environment</h3>
+
                         <div data-role="main">
                             <label for="desired_lum">Luminosity:</label>
                             <input type="range"
@@ -189,8 +178,29 @@ ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9","ee6b7db5b51705a13dc2339db3edaf
                                    step="5"
                                    data-highlight="true"
                                    >
-
                         </div>
+                        
+                        <div style="width: 100%; display:table">
+                            <div style="display: table-row">
+                                <div style="width: 50%; display: table-cell; text-align: center" id="A0">
+                                    <label for="flip-1" style="text-align:center">Lamp A0:</label>
+                                    <select name="flip-1" id="flip-1" data-role="slider">
+                                        <option value="Off">Off</option>
+                                        <option value="On">On</option>
+                                    </select>
+                                </div>
+
+                                <div style="width: 50%; display: table-cell; text-align: center" id="A1">
+                                    <label for="flip-2" style="text-align:center">Lamp A1:</label>
+                                    <select name="flip-2" id="flip-2" data-role="slider">
+                                        <option value="off">Off</option>
+                                        <option value="on">On</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+
 
                         <div data-role="main">
                             <label for="desired_temp">Temperature:</label>
@@ -203,8 +213,6 @@ ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9","ee6b7db5b51705a13dc2339db3edaf
                                    data-highlight="true"
                                    >
                         </div>
-
-                        <input type="button" value="Apply Changes">
                     </div>
                 </form>
             </div>
