@@ -9,7 +9,7 @@ import argparse
 from random import shuffle
 
 parser = argparse.ArgumentParser(description='Modbus tester')
-parser.add_argument('-d','--dev', help='EPOSMote III device descriptor file', default='/dev/ttyUSB0')
+parser.add_argument('-d','--dev', help='EPOSMote III device descriptor file', default='/dev/ttyACM0')
 args = vars(parser.parse_args())
 
 dev = args['dev']
