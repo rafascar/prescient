@@ -1,0 +1,13 @@
+clean:
+	-rm *.aux
+	-rm *.dvi
+	-rm *.lof
+	-rm *.out
+	-rm *.log
+	-rm *.lot
+	-rm *.idx
+	-rm *.toc
+	-rm *.bbl
+	-rm *.gz
+	-rm *.brf
+	-rm *.blg
