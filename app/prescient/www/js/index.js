@@ -1,7 +1,7 @@
 $("#A0").click(function() {
     $.ajax({
         type: "GET",
-        url: "http://localhost:8080/test.py",
+        url: "http://galileo:8080/test",
         data: {turnOn: $("#flip-1").val()},
         success: function(data) {
             $('#demo').text(data);
@@ -23,10 +23,19 @@ function getACTemperature() {
 }
 
 function getInTemperature() {
-    var temp = 18; // Later it will be the data from the sensor
-    var unit = " \xB0C";
-    var temp_str = temp.toString();
-    document.getElementById("showInTemp").innerHTML = temp_str.concat(unit);
+    $.ajax({
+        type: "GET",
+        url: "http://galileo:8080/get_internal_temp",
+        data: {},
+        success: function(data) {
+            $('#showInTemp').text(data + " \xB0C");
+            console.log("There is a response"); 
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            $('#demo').text("An Error Occurred");
+            console.log("There is no response"); 
+        }
+    });
 }
 
 function getExTemperature() {
@@ -49,24 +58,33 @@ function getLampDimmerization() {
     document.getElementById("showLampDimmer").innerHTML = light_str.concat(unit);
 }
 
-function getInLighting() {
-    var light = 90; // Later it will be the data from the sensor
-    var unit = " %";
-    var light_str = light.toString();
-    document.getElementById("showInLight").innerHTML = light_str.concat(unit);
+function getInLuminosity() {
+    $.ajax({
+        type: "GET",
+        url: "http://galileo:8080/get_internal_lum",
+        data: {},
+        success: function(data) {
+            $('#showInLum').text(data + " %");
+            console.log("There is a response"); 
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            $('#demo').text("An Error Occurred");
+            console.log("There is no response"); 
+        }
+    });
 }
 
-function getExLighting() {
+function getExLuminosity() {
     var light = 100; // Later it will be the data from the sensor
     var unit = " %";
     var light_str = light.toString();
-    document.getElementById("showExLight").innerHTML = light_str.concat(unit);
+    document.getElementById("showExLum").innerHTML = light_str.concat(unit);
 }
 
 // Create variables that periodically call the function
 var updateLampDimmerization = setInterval(getLampDimmerization, 1000);
-var updateInLighting = setInterval(getInLighting, 1000);
-var updateExLighting = setInterval(getExLighting, 1000);
+var updateInLuminosity = setInterval(getInLuminosity, 1000);
+var updateExLuminosity = setInterval(getExLuminosity, 1000);
 
 function getAirHumidity() {
     var hum = 70; // Later it will be the data from the sensor
