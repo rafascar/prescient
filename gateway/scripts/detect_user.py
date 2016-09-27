@@ -4,28 +4,19 @@ import subprocess
 import threading
 import time
 import os
-#from wiringx86 import GPIOGalileoGen2 as GPIO
-#
-#gpio = GPIO(debug=False)
-#user_pin = 0
-#gpio.pinMode(user_pin, gpio.OUTPUT)
+from wiringx86 import GPIOGalileoGen2 as GPIO
+
+gpio = GPIO(debug=False)
+user_pin = 0
+gpio.pinMode(user_pin, gpio.OUTPUT)
 
 class user(object):
-    def __init__(self, file):
+    def __init__(self, MAC, name):
         self.connected = False
-        self.file = file
         self.last_connected = 0
+        self.name = name
+        self.mac_addr = MAC
         self.ip ="" 
-        self.last_ip = ""
-
-        with open(file) as users:
-            for line in users:
-                column = line.split()
-                self.mac_addr = column[0]
-                self.name = column[1]
-                if len(column) > 2:
-                    self.last_ip = column[2]
-
 
     def validate_ip(self):
         valid = self.ip.split('.')
@@ -42,12 +33,7 @@ class user(object):
             self.connected = True
             print ("Found user %s on: " %self.name,self.ip)
             self.last_connected = time.time()
-
-            with open(self.file, 'w+') as users:
-                string = self.mac_addr + ' ' + self.name + ' ' + self.ip
-                print(string)
-                users.write(string)
-            #gpio.digitalWrite(user_pin, gpio.HIGH)
+            gpio.digitalWrite(user_pin, gpio.HIGH)
         else:
             print ("Not Found")
 
@@ -66,12 +52,15 @@ def find_user(smartphone):
        if response != 0 and (time.time() - smartphone.last_connected > 300):
            smartphone.connected = False # if smartphone disconnected change status to begin searching for it again
            threading.Timer(0.5, find_user, [smartphone]).start()
-           #gpio.digitalWrite(user_pin, gpio.LOW)
+           gpio.digitalWrite(user_pin, gpio.LOW)
        else:
            print(time.time() - smartphone.last_connected)
            #time.sleep(5)
            threading.Timer(5, find_user, [smartphone]).start()
 
 if __name__ == '__main__':
-    smartphone = user('users.txt')
+    with open('users.txt') as users:
+        for line in users:
+            column = line.split()
+            smartphone = user(column[0], column[1])
     find_user(smartphone)
