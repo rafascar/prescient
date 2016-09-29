@@ -1,10 +1,21 @@
 import serial
+import math
 import sys
 import time
 import os.path
 import argparse
 import threading
 
+class MoteData(object):
+      
+    def convert_power(raw):
+        pw = -1
+        if (raw < 100):
+            pw = 0
+        else:
+            pw = 220 * math.sqrt(raw) * 0.004343
+        return (round(pw * 100) / 100)
+        
 
 class EposMoteIII(object):
     """
@@ -140,6 +151,11 @@ class EposMoteIII(object):
 
         if self.debug:
            print (A0_val[self.first_byte_msg:self.last_byte_msg], B00_val[self.first_byte_msg:self.last_byte_msg], B01_val[self.first_byte_msg:self.last_byte_msg], A1_val[self.first_byte_msg:self.last_byte_msg], B10_val[self.first_byte_msg:self.last_byte_msg], B11_val[self.first_byte_msg:self.last_byte_msg], "%s seconds" %(time.time()-start_time))
+           print (MoteData.convert_power(int(A0_val[self.first_byte_msg:self.last_byte_msg],16)), MoteData.convert_power(int(A1_val[self.first_byte_msg:self.last_byte_msg],16)))
+
+           print (MoteData.convert_power(int(B00_val[self.first_byte_msg:self.last_byte_msg],16)), MoteData.convert_power(int(B01_val[self.first_byte_msg:self.last_byte_msg],16)))
+
+           print (MoteData.convert_power(int(B10_val[self.first_byte_msg:self.last_byte_msg],16)), MoteData.convert_power(int(B11_val[self.first_byte_msg:self.last_byte_msg],16)))
 
 
 if __name__ == "__main__":
