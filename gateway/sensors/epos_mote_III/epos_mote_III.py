@@ -116,6 +116,8 @@ class EposMoteIII(object):
 
     def parse_data(self):
         # Set all values to not gotten
+        self.mote.close()
+        self.mote.open()
         start_time = time.time()
         A0 = False
         A1 = False
