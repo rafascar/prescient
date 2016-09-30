@@ -1,5 +1,5 @@
 import sys 
-sys.path.append("../scripts")
+sys.path.append("../gpio")
 from wiringx86 import GPIOGalileoGen2 as GPIO
 import time
 

@@ -1,16 +1,18 @@
+import sys
+sys.path.append("../../gpio")
 import serial
 import math
-import sys
 import time
 import os.path
 import argparse
 import threading
+from wiringx86 import GPIOGalileoGen2 as GPIO
 
 class MoteData(object):
       
     def convert_power(raw):
         pw = -1
-        if (raw < 100):
+        if (raw < 120):
             pw = 0
         else:
             pw = 220 * math.sqrt(raw) * 0.004343
@@ -127,7 +129,10 @@ class EposMoteIII(object):
         B11 = False
 
         while not (A0 and A1 and B00 and B01 and B10 and B11):
+            gpio.digitalWrite(mote_pin, gpio.HIGH)
             line = self.mote.readline().decode("utf-8")
+            gpio.digitalWrite(mote_pin, gpio.LOW)
+            time.sleep(0.1)
             if line.startswith(":A0"):
                 A0_val = line
                 A0 = True
@@ -162,6 +167,9 @@ class EposMoteIII(object):
 
 if __name__ == "__main__":
     gateway = EposMoteIII(debug=True)#dev='/dev/ttyUSB0')
+    gpio = GPIO(debug=False)
+    mote_pin = 2
+    gpio.pinMode(mote_pin, gpio.OUTPUT)
 
     while True:
         gateway.parse_data()
