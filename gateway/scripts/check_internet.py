@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+import sys
+sys.path.append("../gpio")
+
 import os
 import time
 import threading
@@ -14,11 +17,13 @@ gpio.pinMode(internet_pin, gpio.OUTPUT)
 def check_internet():
     response = os.system("ping -c 1 google.com -q > /dev/null 2>&1") # ping 0 = success
     if response == 0:
-        print ("Connected")
+        print ("Connected to internet")
         gpio.digitalWrite(internet_pin, gpio.HIGH)
-        threading.Timer(3, check_internet).start()
+        threading.Timer(30, check_internet).start()
+        return
 
     else: 
-        print("Fuck")
+        print("Unable to connect to internet")
         gpio.digitalWrite(internet_pin, gpio.LOW)
-        threading.Timer(3, check_internet).start()
+        threading.Timer(30, check_internet).start()
+        return
