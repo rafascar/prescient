@@ -8,6 +8,10 @@ import argparse
 import threading
 from wiringx86 import GPIOGalileoGen2 as GPIO
 
+gpio = GPIO(debug=False)
+mote_pin = 2
+gpio.pinMode(mote_pin, gpio.OUTPUT)
+
 class MoteData(object):
       
     def convert_power(raw):
@@ -39,6 +43,13 @@ class EposMoteIII(object):
             self.coil_byte = -13
             self.first_byte_msg = -12
             self.last_byte_msg = -4
+
+        self.A0_pw = 0
+        self.A1_pw = 0
+        self.B00_pw = 0
+        self.B01_pw = 0
+        self.B10_pw = 0
+        self.B11_pw = 0
 
         print ("Done!")
 
@@ -121,6 +132,7 @@ class EposMoteIII(object):
         self.mote.close()
         self.mote.open()
         start_time = time.time()
+
         A0 = False
         A1 = False
         B00 = False
@@ -158,19 +170,26 @@ class EposMoteIII(object):
 
         if self.debug:
            print (A0_val[self.first_byte_msg:self.last_byte_msg], B00_val[self.first_byte_msg:self.last_byte_msg], B01_val[self.first_byte_msg:self.last_byte_msg], A1_val[self.first_byte_msg:self.last_byte_msg], B10_val[self.first_byte_msg:self.last_byte_msg], B11_val[self.first_byte_msg:self.last_byte_msg], "%s seconds" %(time.time()-start_time))
+
            print (MoteData.convert_power(int(A0_val[self.first_byte_msg:self.last_byte_msg],16)), MoteData.convert_power(int(A1_val[self.first_byte_msg:self.last_byte_msg],16)))
 
            print (MoteData.convert_power(int(B00_val[self.first_byte_msg:self.last_byte_msg],16)), MoteData.convert_power(int(B01_val[self.first_byte_msg:self.last_byte_msg],16)))
 
            print (MoteData.convert_power(int(B10_val[self.first_byte_msg:self.last_byte_msg],16)), MoteData.convert_power(int(B11_val[self.first_byte_msg:self.last_byte_msg],16)))
 
+        self.A0_pw = MoteData.convert_power(int(A0_val[self.first_byte_msg:self.last_byte_msg],16))
+        self.A1_pw = MoteData.convert_power(int(A1_val[self.first_byte_msg:self.last_byte_msg],16))
+        self.B00_pw = MoteData.convert_power(int(B00_val[self.first_byte_msg:self.last_byte_msg],16))
+        self.B01_pw = MoteData.convert_power(int(B01_val[self.first_byte_msg:self.last_byte_msg],16))
+        self.B10_pw = MoteData.convert_power(int(B10_val[self.first_byte_msg:self.last_byte_msg],16))
+        self.B11_pw = MoteData.convert_power(int(B11_val[self.first_byte_msg:self.last_byte_msg],16))
+
+        print (self.A0_pw, self.A1_pw, self.B00_pw, self.B01_pw, self.B10_pw, self.B11_pw)
+
+        threading.Timer(30, self.parse_data).start()
+        return
 
 if __name__ == "__main__":
     gateway = EposMoteIII(debug=True)#dev='/dev/ttyUSB0')
-    gpio = GPIO(debug=False)
-    mote_pin = 2
-    gpio.pinMode(mote_pin, gpio.OUTPUT)
 
-    while True:
-        gateway.parse_data()
-        time.sleep(3)
+    gateway.parse_data()
