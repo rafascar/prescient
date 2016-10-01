@@ -1,7 +1,7 @@
 $("#A0").click(function() {
     $.ajax({
         type: "GET",
-        url: "http://galileo:8080/test",
+        url: "http://prescient:8080/test",
         data: {turnOn: $("#flip-1").val()},
         success: function(data) {
             $('#demo').text(data);
@@ -25,7 +25,7 @@ function getACTemperature() {
 function getInTemperature() {
     $.ajax({
         type: "GET",
-        url: "http://galileo:8080/get_internal_temp",
+        url: "http://prescient:8080/get_internal_temp",
         data: {},
         success: function(data) {
             $('#showInTemp').text(data + " \xB0C");
@@ -61,7 +61,7 @@ function getLampDimmerization() {
 function getInLuminosity() {
     $.ajax({
         type: "GET",
-        url: "http://galileo:8080/get_internal_lum",
+        url: "http://prescient:8080/get_internal_lum",
         data: {},
         success: function(data) {
             $('#showInLum').text(data + " %");
