@@ -15,5 +15,5 @@ class photo_resistor(object):
     def get_value(self):
         self.raw = self.gpio.analogRead(self.pin)
         self.normalized = (self.raw/1024.0)
-        self.percent = 100 - self.normalized * 100
+        self.percent = self.normalized * 100
         return self.percent 
