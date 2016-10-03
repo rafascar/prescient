@@ -35,11 +35,11 @@ class user(object):
         valid = self.validate_ip()
         if valid:
             self.connected = True
-            print ("Found user %s on: " %self.name,self.ip)
+            print ("USER: \tFound user %s on: " %self.name,self.ip)
             self.last_connected = time.time()
             gpio.digitalWrite(user_pin, gpio.HIGH)
         else:
-            print ("Not Found")
+            print ("USER: \tNot Found")
 
 def find_user(smartphone):
    # if the smartphone is currently with status connected False keep searching the net for it
@@ -50,8 +50,7 @@ def find_user(smartphone):
    else:
    # if the smartphone was found keep cheking it's IP address to verify if it is still connected
        response = os.system("ping -c 1 " + smartphone.ip) # ping 0 = success
-       print (response)
-
+       #print (response)
        if response == 0:
            smartphone.last_connected = time.time()
        if response != 0 and (time.time() - smartphone.last_connected > 300):
@@ -60,7 +59,7 @@ def find_user(smartphone):
            gpio.digitalWrite(user_pin, gpio.LOW)
            return
        else:
-           print(time.time() - smartphone.last_connected)
+           print("USER: \t",time.time() - smartphone.last_connected)
            #time.sleep(5)
            threading.Timer(5, find_user, [smartphone]).start()
            return

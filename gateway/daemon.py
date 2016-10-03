@@ -28,7 +28,7 @@ def dataset_save(smartphone, mote):
                 str(presence.get_value()) + ',' + \
                 str(temperature.get_value()) + ',' + \
                 str(luminosity.get_value()) + '\n')
-    print("\n\n\nDATA SUCCESSFULY LOGGED \n\n\n")
+        print("DATA LOGGER: \t Data successfully logged @ %s!" %str(datetime.datetime.today()))
     threading.Timer(90, dataset_save, [smartphone, gateway]).start()
     return
 
