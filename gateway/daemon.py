@@ -15,6 +15,7 @@ import threading
 
 
 def dataset_save(smartphone, mote):
+    lock.acquire()
     with open('dataset.csv', 'a') as dataset:
         dataset.write(str(datetime.datetime.today()) + ',' + \
                 str(datetime.datetime.today().weekday()) + ',' + \
@@ -30,6 +31,7 @@ def dataset_save(smartphone, mote):
                 str(luminosity.get_value()) + '\n')
         print("DATA LOGGER: \t Data successfully logged @ %s!" %str(datetime.datetime.today()))
     threading.Timer(90, dataset_save, [smartphone, gateway]).start()
+    lock.release()
     return
 
 def run():
@@ -39,6 +41,7 @@ def run():
     threading.Timer(90, dataset_save, [smartphone, gateway]).start()
 
 if __name__ == '__main__':
+    lock = threading.Lock()
     scripts_path = './scripts/'
     gateway = EposMoteIII()#dev='/dev/ttyUSB0')
     with open('./scripts/users.txt') as users:
@@ -52,4 +55,5 @@ if __name__ == '__main__':
         run()
 
     except KeyboardInterrupt: 
+        print("Getting out of the way") 
         gpio.cleanup()
