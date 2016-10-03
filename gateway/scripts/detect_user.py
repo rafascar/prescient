@@ -22,6 +22,7 @@ class user(object):
         self.mac_addr = MAC
         self.ip ="" 
         self.last_ip = last_ip
+        self.tries = 0
 
     def validate_ip(self):
         valid = self.ip.split('.')
@@ -34,17 +35,23 @@ class user(object):
         if self.last_ip == "none":
             self.ip = subprocess.check_output("%sfind_mac.sh %s" %(self.scripts_path,self.mac_addr), shell=True)
             self.ip = self.ip[:-1].decode("utf-8")
-            self.last_ip = self.ip
             valid = self.validate_ip()
+            response = 1
         else:
-            response = os.system("ping -q -c 1 " + self.last_ip + " > /dev/null 2> /dev/null") # ping 0 = success
-            print(response)
-            if response == 0:
+            response = subprocess.check_output("%sping_ip_check_mac.sh %s %s" %(self.scripts_path, self.last_ip, self.mac_addr), shell=True)
+            response = response[:-1].decode("utf-8")
+            if response == "online":
                 self.ip = self.last_ip
                 valid = self.validate_ip()
+            if response == "offline":
+                self.last_ip = "none"
+                self.ip = ""
+                self.connected = False
+                valid = False
 
-        if valid or response == 0:
+        if valid or (response == 0):
             self.connected = True
+            self.last_ip = self.ip
             print ("USER: \tFound user %s on: " %self.name,self.ip)
             self.last_connected = time.time()
            # gpio.digitalWrite(user_pin, gpio.HIGH)
@@ -71,7 +78,7 @@ def find_user(smartphone):
        else:
            print("USER: \tTime since last connected: ",time.time() - smartphone.last_connected)
            #time.sleep(5)
-           threading.Timer(5, find_user, [smartphone]).start()
+           threading.Timer(15, find_user, [smartphone]).start()
            return
 
 if __name__ == '__main__':
@@ -80,5 +87,5 @@ if __name__ == '__main__':
 #        for line in users:
 #            column = line.split()
 #            smartphone = user(scripts_path, column[0], column[1])
-    smartphone = user('./', "2c:8a:72:b1:f8:55", "rsmeurer0", "192.168.1.100")
+    smartphone = user('./', "2c:8a:72:b1:f8:55", "rsmeurer0", "192.168.1.102")
     find_user(smartphone)
