@@ -13,15 +13,18 @@ from sensors.presence.presence_sensor import presence_sensor
 import datetime
 import threading
 
+last_time_present = time.time()
+lights_on = False
 
 def dataset_save(smartphone, mote):
+    print("DATA LOGGER:\tStarting Now")
     lock.acquire()
-    with open('dataset.csv', 'a') as dataset:
+    with open('dataset.csv', 'a+') as dataset:
         dataset.write(str(datetime.datetime.today()) + ',' + \
                 str(datetime.datetime.today().weekday()) + ',' + \
                 str(smartphone.connected) + ',' + \
                 str(mote.A0_pw) + ',' + \
-                str(mote.A1_pw) + ',' + \
+                #str(mote.A1_pw) + ',' + \
                 str(mote.B00_pw) + ',' + \
                 str(mote.B01_pw) + ',' + \
                 str(mote.B10_pw) + ',' + \
@@ -29,21 +32,46 @@ def dataset_save(smartphone, mote):
                 str(presence.get_value()) + ',' + \
                 str(temperature.get_value()) + ',' + \
                 str(luminosity.get_value()) + '\n')
-        print("DATA LOGGER: \t Data successfully logged @ %s!" %str(datetime.datetime.today()))
-    threading.Timer(90, dataset_save, [smartphone, gateway]).start()
+        print("DATA LOGGER: \tData successfully logged @ %s!" %str(datetime.datetime.today()))
+    threading.Timer(90, dataset_save, [smartphone, mote]).start()
     lock.release()
     return
 
+def check_presence():
+    global last_time_present
+    global lights_on
+    present = presence.get_value()
+    #print("PRESENCE: \t", str(present))
+    if smartphone.connected or present:
+        last_time_present = time.time()
+        if lights_on == False:
+            print("GATEWAY: \tTurnning Lights ON now!") 
+            gateway.on(b'A0')
+            #gateway.on(b'A1')
+            lights_on = True
+    elif not present and (time.time() - last_time_present) > 5400:
+        if lights_on:
+            print("GATEWAY: \tTurnning Lights OFF now!")
+            gateway.off(b'A0')
+            #gateway.off(b'A1')
+            lights_on = False
+    threading.Timer(5, check_presence).start()
+
 def run():
-    find_user(smartphone)
-    check_internet()
-    gateway.parse_data()
-    threading.Timer(90, dataset_save, [smartphone, gateway]).start()
+    dataset_save(smartphone, gateway)
+    check_presence()
+    while True:
+        #find_user(smartphone, lock)
+        check_internet()
+        gateway.parse_data(lock)
 
 if __name__ == '__main__':
     lock = threading.Lock()
     scripts_path = './scripts/'
     gateway = EposMoteIII()#dev='/dev/ttyUSB0')
+    gateway.debug(True)
+    gateway.off(b'A0')
+    #gateway.off(b'A1')
     with open('./scripts/users.txt') as users:
         for line in users:
             column = line.split()
