@@ -18,7 +18,7 @@ lights_on = False
 
 def dataset_save(smartphone, mote):
     print("DATA LOGGER:\tStarting Now")
-    lock.acquire()
+    #lock.acquire()
     with open('dataset.csv', 'a+') as dataset:
         dataset.write(str(datetime.datetime.today()) + ',' + \
                 str(datetime.datetime.today().weekday()) + ',' + \
@@ -33,8 +33,8 @@ def dataset_save(smartphone, mote):
                 str(temperature.get_value()) + ',' + \
                 str(luminosity.get_value()) + '\n')
         print("DATA LOGGER: \tData successfully logged @ %s!" %str(datetime.datetime.today()))
-    threading.Timer(90, dataset_save, [smartphone, mote]).start()
-    lock.release()
+    #threading.Timer(90, dataset_save, [smartphone, mote]).start()
+    #lock.release()
     return
 
 def check_presence():
@@ -58,12 +58,13 @@ def check_presence():
     threading.Timer(5, check_presence).start()
 
 def run():
-    dataset_save(smartphone, gateway)
-    check_presence()
+    #check_presence()
     while True:
         #find_user(smartphone, lock)
         check_internet()
+        time.sleep(0.1)
         gateway.parse_data(lock)
+        dataset_save(smartphone, gateway)
 
 if __name__ == '__main__':
     lock = threading.Lock()

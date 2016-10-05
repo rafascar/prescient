@@ -183,7 +183,7 @@ class EposMoteIII(object):
         self.B10_pw = MoteData.convert_power(int(B10_val[self.first_byte_msg:self.last_byte_msg],16))
         self.B11_pw = MoteData.convert_power(int(B11_val[self.first_byte_msg:self.last_byte_msg],16))
 
-        print ("GATEWAY: \t",self.A0_pw, self.B00_pw, self.B01_pw, self.B10_pw, self.B11_pw) #self.A1_pw, 
+        print ("GATEWAY:\t",self.A0_pw, self.B00_pw, self.B01_pw, self.B10_pw, self.B11_pw) #self.A1_pw, 
 
         #threading.Timer(30, self.parse_data, [lock]).start()
         return
