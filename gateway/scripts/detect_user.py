@@ -9,9 +9,9 @@ import time
 import os
 from wiringx86 import GPIOGalileoGen2 as GPIO
 
-#gpio = GPIO(debug=False)
-#user_pin = 0
-#gpio.pinMode(user_pin, gpio.OUTPUT)
+gpio = GPIO(debug=False)
+user_pin = 0
+gpio.pinMode(user_pin, gpio.OUTPUT)
 
 class user(object):
     def __init__(self, path, MAC, name, last_ip="none"):
@@ -54,31 +54,36 @@ class user(object):
             self.last_ip = self.ip
             print ("USER: \tFound user %s on: " %self.name,self.ip)
             self.last_connected = time.time()
-           # gpio.digitalWrite(user_pin, gpio.HIGH)
+            gpio.digitalWrite(user_pin, gpio.HIGH)
         else:
             print ("USER: \tNot Found")
 
-def find_user(smartphone):
-   # if the smartphone is currently with status connected False keep searching the net for it
-   if not smartphone.connected:
+def find_user(smartphone, lock):
+    # if the smartphone is currently with status connected False keep searching the net for it
+    print("USER:\t\tStarting User search now!")
+    if not smartphone.connected:
+       lock.acquire()
        smartphone.search_net()
-       threading.Timer(5, find_user, [smartphone]).start()
+       lock.release()
+       #threading.Timer(5, find_user, [smartphone, lock]).start()
        return
-   else:
-   # if the smartphone was found keep cheking it's IP address to verify if it is still connected
+    else:
+    # if the smartphone was found keep cheking it's IP address to verify if it is still connected
+       lock.acquire()
        response = os.system("ping -c 1 " + smartphone.ip + " > /dev/null 2> /dev/null") # ping 0 = success
+       lock.release()
        #print (response)
        if response == 0:
            smartphone.last_connected = time.time()
        if response != 0 and (time.time() - smartphone.last_connected > 300):
            smartphone.connected = False # if smartphone disconnected change status to begin searching for it again
-           threading.Timer(5, find_user, [smartphone]).start()
-           #gpio.digitalWrite(user_pin, gpio.LOW)
+           #threading.Timer(5, find_user, [smartphone, lock]).start()
+           gpio.digitalWrite(user_pin, gpio.LOW)
            return
        else:
-           print("USER: \tTime since last connected: ",time.time() - smartphone.last_connected)
+           print("USER:\t\tTime since last connected: ",time.time() - smartphone.last_connected)
            #time.sleep(5)
-           threading.Timer(15, find_user, [smartphone]).start()
+           #threading.Timer(15, find_user, [smartphone, lock]).start()
            return
 
 if __name__ == '__main__':
@@ -87,5 +92,7 @@ if __name__ == '__main__':
 #        for line in users:
 #            column = line.split()
 #            smartphone = user(scripts_path, column[0], column[1])
+
+    lock = threading.Lock()
     smartphone = user('./', "2c:8a:72:b1:f8:55", "rsmeurer0", "192.168.1.102")
-    find_user(smartphone)
+    find_user(smartphone, lock)
