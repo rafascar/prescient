@@ -185,7 +185,7 @@ class EposMoteIII(object):
 
         print ("GATEWAY:\t",self.A0_pw, self.B00_pw, self.B01_pw, self.B10_pw, self.B11_pw) #self.A1_pw, 
 
-        #threading.Timer(30, self.parse_data, [lock]).start()
+        threading.Timer(30, self.parse_data, [lock]).start()
         return
 
 if __name__ == "__main__":

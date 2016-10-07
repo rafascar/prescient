@@ -3,6 +3,7 @@
 import sys
 sys.path.append("./gpio")
 
+import gc
 import time
 from scripts.detect_user import *
 from scripts.check_internet import *
@@ -33,7 +34,7 @@ def dataset_save(smartphone, mote):
                 str(temperature.get_value()) + ',' + \
                 str(luminosity.get_value()) + '\n')
         print("DATA LOGGER: \tData successfully logged @ %s!" %str(datetime.datetime.today()))
-    #threading.Timer(90, dataset_save, [smartphone, mote]).start()
+    threading.Timer(90, dataset_save, [smartphone, mote]).start()
     #lock.release()
     return
 
@@ -56,14 +57,23 @@ def check_presence():
             #gateway.off(b'A1')
             lights_on = False
     threading.Timer(5, check_presence).start()
+    return
+
+def clean_garbage():
+    gc.collect()
+    threading.Timer(10, clean_garbage).start()
+    print(threading.enumerate())
+    print(threading.activeCount())
+    return
 
 def run():
     check_presence()
-    while True:
+    threading.Timer(90, dataset_save, [smartphone, gateway]).start()
+    check_internet()
+    gateway.parse_data(lock)
+    clean_garbage()
+    #while True:
         #find_user(smartphone, lock)
-        check_internet()
-        gateway.parse_data(lock)
-        dataset_save(smartphone, gateway)
 
 if __name__ == '__main__':
     lock = threading.Lock()
