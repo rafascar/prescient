@@ -58,11 +58,10 @@ def check_presence():
     threading.Timer(5, check_presence).start()
 
 def run():
-    #check_presence()
+    check_presence()
     while True:
         #find_user(smartphone, lock)
         check_internet()
-        time.sleep(0.1)
         gateway.parse_data(lock)
         dataset_save(smartphone, gateway)
 
