@@ -21,6 +21,7 @@ class MoteData(object):
         else:
             pw = 220 * math.sqrt(raw) * 0.004343
         return (round(pw * 100) / 100)
+
         
 
 class EposMoteIII(object):
@@ -50,6 +51,8 @@ class EposMoteIII(object):
         self.B01_pw = 0
         self.B10_pw = 0
         self.B11_pw = 0
+        self.D00_tmp = 0
+        self.D01_hum = 0
 
         self.last_write = 0
         self.INTER_WRITE_TIME = 0.35 # seconds
@@ -120,77 +123,83 @@ class EposMoteIII(object):
             do(all,self.off,0.1)
             time.sleep(1)
 
-    def parse_data(self, lock):
+    def parse_data(self, period, lock):
+        while True:
+            print ("GATEWAY:\tStarting data parsing")
+            self.mote.reset_input_buffer()
+            start_time = time.time()
 
-        print ("GATEWAY:\tStarting data parsing")
-        lock.acquire()
-        self.mote.reset_input_buffer()
-        start_time = time.time()
+            # Set all values to not gotten
+            A0 = False
+            #A1 = False
+            B00 = False
+            B01 = False
+            B10 = False
+            B11 = False
+            D00 = False
+            D01 = False
 
-        # Set all values to not gotten
-        A0 = False
-        #A1 = False
-        B00 = False
-        B01 = False
-        B10 = False
-        B11 = False
-
-        while not (A0  and B00 and B01 and B10 and B11): #and A1
-            gpio.digitalWrite(mote_pin, gpio.HIGH)
-            line = self.mote.readline().decode("utf-8")
-            gpio.digitalWrite(mote_pin, gpio.LOW)
-            time.sleep(0.1)
-            if line.startswith(":A0"):
-                A0_val = line
-                A0 = True
-            #if line.startswith(":A1"):
-            #    A1_val = line
-            #    A1 = True
-            if line.startswith(":B0"):
-                if line[self.coil_byte] == '0':
-                    B00_val = line
-                    B00 = True
-                if line[self.coil_byte] == '1':
-                    B01_val = line
-                    B01 = True
-            if line.startswith(":B1"):
-                if line[self.coil_byte] == '0':
-                    B10_val = line
-                    B10 = True
-                if line[self.coil_byte] == '1':
-                    B11_val = line
-                    B11 = True
-            #if self.debugger:
-                #print ("A0:", A0, "\tA1:", A1, "\tB00:", B00, "\tB01:", B01, "\tB10:", B10, "\tB11:", B11)
-
-        lock.release()
+            while not (A0  and B00 and B01 and B10 and B11 and D00 and D01): #and A1
+                gpio.digitalWrite(mote_pin, gpio.HIGH)
+                line = self.mote.readline().decode("utf-8")
+                gpio.digitalWrite(mote_pin, gpio.LOW)
+                time.sleep(0.1)
+                if line.startswith(":A0"):
+                    A0_val = line
+                    A0 = True
+                #if line.startswith(":A1"):
+                #    A1_val = line
+                #    A1 = True
+                if line.startswith(":B0"):
+                    if line[self.coil_byte] == '0':
+                        B00_val = line
+                        B00 = True
+                    if line[self.coil_byte] == '1':
+                        B01_val = line
+                        B01 = True
+                if line.startswith(":B1"):
+                    if line[self.coil_byte] == '0':
+                        B10_val = line
+                        B10 = True
+                    if line[self.coil_byte] == '1':
+                        B11_val = line
+                        B11 = True
+                if line.startswith(":D0"):
+                    if line[self.coil_byte] == '0':
+                        D00_val = line
+                        D00 = True
+                    if line[self.coil_byte] == '1':
+                        D01_val = line
+                        D01 = True
+                #if self.debugger:
+                    #print ("A0:", A0, "\tA1:", A1, "\tB00:", B00, "\tB01:", B01, "\tB10:", B10, "\tB11:", B11)
 
 
-        print ("GATEWAY:\tFinish data parsing")
-        if self.debugger:
-        #   print (A0_val[self.first_byte_msg:self.last_byte_msg], B00_val[self.first_byte_msg:self.last_byte_msg], B01_val[self.first_byte_msg:self.last_byte_msg], A1_val[self.first_byte_msg:self.last_byte_msg], B10_val[self.first_byte_msg:self.last_byte_msg], B11_val[self.first_byte_msg:self.last_byte_msg], "%s seconds" %(time.time()-start_time))
+            print ("GATEWAY:\tFinish data parsing")
+            if self.debugger:
+            #   print (A0_val[self.first_byte_msg:self.last_byte_msg], B00_val[self.first_byte_msg:self.last_byte_msg], B01_val[self.first_byte_msg:self.last_byte_msg], A1_val[self.first_byte_msg:self.last_byte_msg], B10_val[self.first_byte_msg:self.last_byte_msg], B11_val[self.first_byte_msg:self.last_byte_msg], "%s seconds" %(time.time()-start_time))
 
-           #print (MoteData.convert_power(int(A0_val[self.first_byte_msg:self.last_byte_msg],16)), MoteData.convert_power(int(A1_val[self.first_byte_msg:self.last_byte_msg],16)))
+               #print (MoteData.convert_power(int(A0_val[self.first_byte_msg:self.last_byte_msg],16)), MoteData.convert_power(int(A1_val[self.first_byte_msg:self.last_byte_msg],16)))
 
-           print (MoteData.convert_power(int(B00_val[self.first_byte_msg:self.last_byte_msg],16)), MoteData.convert_power(int(B01_val[self.first_byte_msg:self.last_byte_msg],16)))
+               print (MoteData.convert_power(int(B00_val[self.first_byte_msg:self.last_byte_msg],16)), MoteData.convert_power(int(B01_val[self.first_byte_msg:self.last_byte_msg],16)))
 
-           print (MoteData.convert_power(int(B10_val[self.first_byte_msg:self.last_byte_msg],16)), MoteData.convert_power(int(B11_val[self.first_byte_msg:self.last_byte_msg],16)))
+               print (MoteData.convert_power(int(B10_val[self.first_byte_msg:self.last_byte_msg],16)), MoteData.convert_power(int(B11_val[self.first_byte_msg:self.last_byte_msg],16)))
 
-        self.A0_pw = MoteData.convert_power(int(A0_val[self.first_byte_msg:self.last_byte_msg],16))
-        #self.A1_pw = MoteData.convert_power(int(A1_val[self.first_byte_msg:self.last_byte_msg],16))
-        self.B00_pw = MoteData.convert_power(int(B00_val[self.first_byte_msg:self.last_byte_msg],16))
-        self.B01_pw = MoteData.convert_power(int(B01_val[self.first_byte_msg:self.last_byte_msg],16))
-        self.B10_pw = MoteData.convert_power(int(B10_val[self.first_byte_msg:self.last_byte_msg],16))
-        self.B11_pw = MoteData.convert_power(int(B11_val[self.first_byte_msg:self.last_byte_msg],16))
+            self.A0_pw = MoteData.convert_power(int(A0_val[self.first_byte_msg:self.last_byte_msg],16))
+            #self.A1_pw = MoteData.convert_power(int(A1_val[self.first_byte_msg:self.last_byte_msg],16))
+            self.B00_pw = MoteData.convert_power(int(B00_val[self.first_byte_msg:self.last_byte_msg],16))
+            self.B01_pw = MoteData.convert_power(int(B01_val[self.first_byte_msg:self.last_byte_msg],16))
+            self.B10_pw = MoteData.convert_power(int(B10_val[self.first_byte_msg:self.last_byte_msg],16))
+            self.B11_pw = MoteData.convert_power(int(B11_val[self.first_byte_msg:self.last_byte_msg],16))
+            self.D00_tmp = int(D00_val[self.first_byte_msg:self.last_byte_msg],16)
+            self.D01_hum = int(D01_val[self.first_byte_msg:self.last_byte_msg],16)
 
-        print ("GATEWAY:\t",self.A0_pw, self.B00_pw, self.B01_pw, self.B10_pw, self.B11_pw) #self.A1_pw, 
-
-        threading.Timer(30, self.parse_data, [lock]).start()
-        return
+            print ("GATEWAY:\t",self.A0_pw, self.B00_pw, self.B01_pw, self.B10_pw, self.B11_pw, self.D00_tmp, self.D01_hum) #self.A1_pw, 
+            time.sleep(period)
+        
 
 if __name__ == "__main__":
     gateway = EposMoteIII(debugger=True)#dev='/dev/ttyUSB0')
     lock = threading.Lock()
     gateway.debug(True)
-    gateway.parse_data(lock)
     gateway.dance()

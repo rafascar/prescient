@@ -42,6 +42,7 @@ class user(object):
             response = response[:-1].decode("utf-8")
             if response == "online":
                 self.ip = self.last_ip
+                self.connected = True
                 valid = self.validate_ip()
             if response == "offline":
                 self.last_ip = "none"
@@ -58,33 +59,25 @@ class user(object):
         else:
             print ("USER: \tNot Found")
 
-def find_user(smartphone, lock):
-    # if the smartphone is currently with status connected False keep searching the net for it
-    print("USER:\t\tStarting User search now!")
-    if not smartphone.connected:
-       lock.acquire()
-       smartphone.search_net()
-       lock.release()
-       #threading.Timer(5, find_user, [smartphone, lock]).start()
-       return
-    else:
-    # if the smartphone was found keep cheking it's IP address to verify if it is still connected
-       lock.acquire()
-       response = os.system("ping -c 1 " + smartphone.ip + " > /dev/null 2> /dev/null") # ping 0 = success
-       lock.release()
-       #print (response)
-       if response == 0:
-           smartphone.last_connected = time.time()
-       if response != 0 and (time.time() - smartphone.last_connected > 300):
-           smartphone.connected = False # if smartphone disconnected change status to begin searching for it again
-           #threading.Timer(5, find_user, [smartphone, lock]).start()
-           gpio.digitalWrite(user_pin, gpio.LOW)
-           return
-       else:
-           print("USER:\t\tTime since last connected: ",time.time() - smartphone.last_connected)
-           #time.sleep(5)
-           #threading.Timer(15, find_user, [smartphone, lock]).start()
-           return
+def find_user(period, lock, smartphone):
+    while True:
+        # if the smartphone is currently with status connected False keep searching the net for it
+        print("USER:\t\tStarting User search now!")
+        if not smartphone.connected:
+           smartphone.search_net()
+        else:
+        # if the smartphone was found keep cheking it's IP address to verify if it is still connected
+           address = "ping -c 1 " + smartphone.ip + " -q > /dev/null 2> /dev/null"
+           response = subprocess.call(address, shell=True) # ping 0 = success
+           #print (response)
+           if response == 0:
+               smartphone.last_connected = time.time()
+           if response != 0 and (time.time() - smartphone.last_connected > 300):
+               smartphone.connected = False # if smartphone disconnected change status to begin searching for it again
+               gpio.digitalWrite(user_pin, gpio.LOW)
+           else:
+               print("USER:\t\tTime since last connected: ",time.time() - smartphone.last_connected)
+        time.sleep(period)
 
 if __name__ == '__main__':
 #    scripts_path = './'
@@ -95,4 +88,5 @@ if __name__ == '__main__':
 
     lock = threading.Lock()
     smartphone = user('./', "2c:8a:72:b1:f8:55", "rsmeurer0", "192.168.1.102")
-    find_user(smartphone, lock)
+    finder = threading.Thread(target=find_user, args=(5, lock, smartphone))
+    finder.start()

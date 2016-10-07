@@ -17,63 +17,80 @@ import threading
 last_time_present = time.time()
 lights_on = False
 
-def dataset_save(smartphone, mote):
-    print("DATA LOGGER:\tStarting Now")
-    #lock.acquire()
-    with open('dataset.csv', 'a+') as dataset:
-        dataset.write(str(datetime.datetime.today()) + ',' + \
-                str(datetime.datetime.today().weekday()) + ',' + \
-                str(smartphone.connected) + ',' + \
-                str(mote.A0_pw) + ',' + \
-                #str(mote.A1_pw) + ',' + \
-                str(mote.B00_pw) + ',' + \
-                str(mote.B01_pw) + ',' + \
-                str(mote.B10_pw) + ',' + \
-                str(mote.B11_pw) + ',' + \
-                str(presence.get_value()) + ',' + \
-                str(temperature.get_value()) + ',' + \
-                str(luminosity.get_value()) + '\n')
-        print("DATA LOGGER: \tData successfully logged @ %s!" %str(datetime.datetime.today()))
-    threading.Timer(90, dataset_save, [smartphone, mote]).start()
-    #lock.release()
-    return
+parse_period = 30
+internet_period = 30 
+presence_period = 3
+data_period = 40
+garbage_period = 5
+mac_finder_period = 10
 
-def check_presence():
+
+def dataset_save(period, lock, smartphone, mote):
+    while True:
+        print("DATA LOGGER:\tStarting Now")
+        with open('dataset.csv', 'a+') as dataset:
+            dataset.write(str(datetime.datetime.today()) + ',' + \
+                    str(datetime.datetime.today().weekday()) + ',' + \
+                    str(smartphone.connected) + ',' + \
+                    str(mote.A0_pw) + ',' + \
+                    #str(mote.A1_pw) + ',' + \
+                    str(mote.B00_pw) + ',' + \
+                    str(mote.B01_pw) + ',' + \
+                    str(mote.B10_pw) + ',' + \
+                    str(mote.B11_pw) + ',' + \
+                    str(mote.D00_tmp) + ',' + \
+                    str(mote.D01_hum) + ',' + \
+                    str(presence.get_value()) + ',' + \
+                    str(temperature.get_value()) + ',' + \
+                    str(luminosity.get_value()) + '\n')
+            print("DATA LOGGER: \tData successfully logged @ %s!" %str(datetime.datetime.today()))
+        time.sleep(period)
+
+def check_presence(period, lock):
     global last_time_present
     global lights_on
-    present = presence.get_value()
-    #print("PRESENCE: \t", str(present))
-    if smartphone.connected or present:
-        last_time_present = time.time()
-        if lights_on == False:
-            print("GATEWAY: \tTurnning Lights ON now!") 
-            gateway.on(b'A0')
-            #gateway.on(b'A1')
-            lights_on = True
-    elif not present and (time.time() - last_time_present) > 5400:
-        if lights_on:
-            print("GATEWAY: \tTurnning Lights OFF now!")
-            gateway.off(b'A0')
-            #gateway.off(b'A1')
-            lights_on = False
-    threading.Timer(5, check_presence).start()
-    return
+    while True:
+        present = presence.get_value()
+        if smartphone.connected or present:
+            last_time_present = time.time()
+            if lights_on == False:
+                print("GATEWAY: \tTurnning Lights ON now!") 
+                gateway.on(b'A0')
+                time.sleep(1)
+                gateway.dimmer(b'A0', b'00')
+                lights_on = True
+        elif not present and (time.time() - last_time_present) > 5400:
+            if lights_on:
+                print("GATEWAY: \tTurnning Lights OFF now!")
+                gateway.off(b'A0')
+                #gateway.off(b'A1')
+                lights_on = False
+        time.sleep(period)
 
-def clean_garbage():
-    gc.collect()
-    threading.Timer(10, clean_garbage).start()
-    print(threading.enumerate())
-    print(threading.activeCount())
-    return
+def clean_garbage(period, lock):
+    while True:
+        gc.collect()
+        print(threading.enumerate())
+        print(threading.activeCount())
+        time.sleep(period)
 
 def run():
-    check_presence()
-    threading.Timer(90, dataset_save, [smartphone, gateway]).start()
-    check_internet()
-    gateway.parse_data(lock)
-    clean_garbage()
-    #while True:
-        #find_user(smartphone, lock)
+    present = threading.Thread(target=check_presence, args=(presence_period, lock))
+    internet = threading.Thread(target=check_internet, args=(internet_period, lock))
+    parser = threading.Thread(target=gateway.parse_data, args=(parse_period, lock))
+    garbage = threading.Thread(target=clean_garbage, args=(garbage_period, lock))
+    data = threading.Thread(target=dataset_save, args=(data_period, lock, smartphone, gateway))
+    mac_finder = threading.Thread(target=find_user, args=(mac_finder_period, lock, smartphone))
+
+
+
+#Start all threads
+    present.start()
+    internet.start()
+    #garbage.start()
+    parser.start()
+    data.start()
+    mac_finder.start()
 
 if __name__ == '__main__':
     lock = threading.Lock()
