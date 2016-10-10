@@ -21,7 +21,7 @@ parse_period = 30
 internet_period = 30 
 presence_period = 3
 data_period = 40
-garbage_period = 5
+garbage_period = 300
 mac_finder_period = 10
 
 
@@ -70,7 +70,6 @@ def check_presence(period, lock):
 def clean_garbage(period, lock):
     while True:
         gc.collect()
-        print(threading.enumerate())
         print(threading.activeCount())
         time.sleep(period)
 
