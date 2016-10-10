@@ -52,6 +52,16 @@ class DHT11{
 
 DHT11 dht11('d', 5);
 
+int photo_cell_read(void)
+{
+    float value = 0;
+    auto photo_cell = ADC{ADC::SINGLE_ENDED_ADC0};
+    int raw =  photo_cell.read(); 
+    value = ((100 * raw/8192) - 29);
+    cout << "Luminosity:\t" << value << endl;
+    return raw;
+}
+
 void Receiver::update(Observed * o, NIC::Protocol p, Buffer * b)
 {
     Frame * f = b->frame();
@@ -109,6 +119,15 @@ public:
                             response.data = dht11.get_humidity();
                         }
                         break;
+                    case 2:
+                        if (data_size == sizeof(short)) {
+                            response.data = htons(photo_cell_read());
+                        } else if(data_size == sizeof(int)) {
+                            response.data = htonl(photo_cell_read());
+                        } else {
+                            response.data = photo_cell_read();
+                        }
+                        break;
                 }
                 send(myAddress(), cmd, reinterpret_cast<unsigned char *>(&response), sizeof(response));
                 break;
@@ -128,58 +147,6 @@ public:
         int idx = 0;
         switch(cmd)
         {
-//            case READ_COILS:
-//                starting_address = (((unsigned short)data[0]) << 8) | data[1];
-//                //quantity_of_registers = (((unsigned short)data[2]) << 8) | data[3];
-//                coil_response = coil0_state  + (coil1_state << 1);
-//                coil_response >>= starting_address;
-//                send(myAddress(), READ_COILS, reinterpret_cast<unsigned char *>(&coil_response), sizeof (unsigned char));
-//                break;
-//
-//            case WRITE_SINGLE_COIL:
-//                output_address = (((unsigned short)data[0]) << 8) | data[1];
-//                output_value = (((unsigned short)data[2]) << 8) | data[3];
-//                ////ack();
-//                if(output_address == 0) {
-//                    if((output_value & 1) != coil0_state) {
-//                        coil0_state = (output_value & 1);
-//                        coil0->set(coil0_state);
-//                        coil0_to_flash(coil0_state);
-//                    }
-//                }
-//                else if(output_address == 1) {
-//                    if((output_value & 1) != coil1_state) {
-//                        coil1_state = (output_value & 1);
-//                        coil1->set(coil1_state);
-//                        coil1_to_flash(coil1_state);
-//                    }
-//                }
-//                else if(output_address == 9)
-//                    Machine::reboot();
-//
-//                break;
-//
-//            case READ_HOLDING_REGISTER:
-//                memset(response, 0, 2*sizeof(sensor_data_type));
-//                starting_address = (((unsigned short)data[0]) << 8) | data[1];
-//                quantity_of_registers = (((unsigned short)data[2]) << 8) | data[3];
-//                if(quantity_of_registers > 2)
-//                    break;
-//                switch(starting_address)
-//                {
-//                    // There are intentionally no breaks
-//                    default:
-//                    case 0:
-//                        if(idx < quantity_of_registers)
-//                            response[idx++] = htons(dht11.get_temperature());
-//                        break;
-//                    case 1:
-//                        if(idx < quantity_of_registers)
-//                            response[idx++] = htons(dht11.get_humidity());
-//                }
-//                send(myAddress(), READ_HOLDING_REGISTER, reinterpret_cast<unsigned char *>(response), quantity_of_registers * sizeof(response[0]));
-//                break;
-//
             default:
                 break;
         }
@@ -266,11 +233,6 @@ void DHT11::read(void)
     }
 }
 
-void photo_cell_read(void)
-{
-    auto photo_cell = ADC{ADC::SINGLE_ENDED_ADC0};
-    cout << "Luminosity:\t" << photo_cell.read() << endl;
-}
 
 int main()
 {
@@ -306,6 +268,8 @@ int main()
         eMote3_GPTM::delay(1000000);
         sensor.modbus->report_proactive(Modbus::READ_HOLDING_REGISTER, 1);
         led.set(false);
+        eMote3_GPTM::delay(1000000);
+        sensor.modbus->report_proactive(Modbus::READ_HOLDING_REGISTER, 2);
     }
 
     return 0;
