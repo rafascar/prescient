@@ -40,6 +40,7 @@ def dataset_save(period, lock, smartphone, mote):
                     str(mote.B11_pw) + ',' + \
                     str(mote.D00_tmp) + ',' + \
                     str(mote.D01_hum) + ',' + \
+                    str(mote.D02_lum) + ',' + \
                     str(presence.get_value()) + ',' + \
                     str(temperature.get_value()) + ',' + \
                     str(luminosity.get_value()) + '\n')
@@ -98,10 +99,11 @@ if __name__ == '__main__':
     gateway.debug(True)
     gateway.off(b'A0')
     #gateway.off(b'A1')
-    with open('./scripts/users.txt') as users:
-        for line in users:
-            column = line.split()
-            smartphone = user(scripts_path, column[0], column[1])
+    #with open('./scripts/users.txt') as users:
+    #    for line in users:
+    #        column = line.split()
+    #        smartphone = user(scripts_path, column[0], column[1])
+    smartphone = user('./', "2c:8a:72:b1:f8:55", "rsmeurer0", "192.168.1.102")
     luminosity = photo_resistor(16)
     temperature = lm35(14)
     presence = presence_sensor(4)

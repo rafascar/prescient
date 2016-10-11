@@ -9,9 +9,9 @@ import time
 import os
 from wiringx86 import GPIOGalileoGen2 as GPIO
 
-gpio = GPIO(debug=False)
-user_pin = 0
-gpio.pinMode(user_pin, gpio.OUTPUT)
+#gpio = GPIO(debug=False)
+#user_pin = 0
+#gpio.pinMode(user_pin, gpio.OUTPUT)
 
 class user(object):
     def __init__(self, path, MAC, name, last_ip="none"):
@@ -32,32 +32,33 @@ class user(object):
             return False
 
     def search_net(self):
-        if self.last_ip == "none":
-            self.ip = subprocess.check_output("%sfind_mac.sh %s" %(self.scripts_path,self.mac_addr), shell=True)
-            self.ip = self.ip[:-1].decode("utf-8")
+#        if self.last_ip == "none":
+#            self.ip = subprocess.check_output("%sfind_mac.sh %s" %(self.scripts_path,self.mac_addr), shell=True)
+#            self.ip = self.ip[:-1].decode("utf-8")
+#            valid = self.validate_ip()
+#            response = 1
+#        else:
+        response = subprocess.check_output("%sping_ip_check_mac.sh %s %s" %(self.scripts_path, self.last_ip, self.mac_addr), shell=True)
+        response = response[:-1].decode("utf-8")
+        print(response)
+        valid = False
+        if response == "online":
+            self.ip = self.last_ip
+            self.connected = True
             valid = self.validate_ip()
-            response = 1
-        else:
-            response = subprocess.check_output("%sping_ip_check_mac.sh %s %s" %(self.scripts_path, self.last_ip, self.mac_addr), shell=True)
-            response = response[:-1].decode("utf-8")
-            if response == "online":
-                self.ip = self.last_ip
-                self.connected = True
-                valid = self.validate_ip()
-            if response == "offline":
-                self.last_ip = "none"
-                self.ip = ""
-                self.connected = False
-                valid = False
-
+        #if response == "offline":
+        #    self.last_ip = "none"
+        #    self.ip = ""
+        #    self.connected = False
+        #    valid = False
         if valid or (response == 0):
             self.connected = True
             self.last_ip = self.ip
-            print ("USER: \tFound user %s on: " %self.name,self.ip)
+            print ("USER: \t\tFound user %s on: " %self.name,self.ip)
             self.last_connected = time.time()
-            gpio.digitalWrite(user_pin, gpio.HIGH)
+            #gpio.digitalWrite(user_pin, gpio.HIGH)
         else:
-            print ("USER: \tNot Found")
+            print ("USER: \t\tNot Found")
 
 def find_user(period, lock, smartphone):
     while True:
@@ -74,7 +75,7 @@ def find_user(period, lock, smartphone):
                smartphone.last_connected = time.time()
            if response != 0 and (time.time() - smartphone.last_connected > 300):
                smartphone.connected = False # if smartphone disconnected change status to begin searching for it again
-               gpio.digitalWrite(user_pin, gpio.LOW)
+               #gpio.digitalWrite(user_pin, gpio.LOW)
            else:
                print("USER:\t\tTime since last connected: ",time.time() - smartphone.last_connected)
         time.sleep(period)
