@@ -38,6 +38,10 @@ class user(object):
 #            valid = self.validate_ip()
 #            response = 1
 #        else:
+        address = "ping -c 1 " + smartphone.ip + " -q > /dev/null 2> /dev/null"
+        p = subprocess.Popen(address.split(),stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+        out,err = p.communicate()
+        response = p.wait()        
         response = subprocess.check_output("%sping_ip_check_mac.sh %s %s" %(self.scripts_path, self.last_ip, self.mac_addr), shell=True)
         response = response[:-1].decode("utf-8")
         print(response)
