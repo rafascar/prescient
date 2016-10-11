@@ -9,9 +9,9 @@ import time
 import os
 from wiringx86 import GPIOGalileoGen2 as GPIO
 
-#gpio = GPIO(debug=False)
-#user_pin = 0
-#gpio.pinMode(user_pin, gpio.OUTPUT)
+gpio = GPIO(debug=False)
+user_pin = 0
+gpio.pinMode(user_pin, gpio.OUTPUT)
 
 class user(object):
     def __init__(self, path, MAC, name, last_ip="none"):
@@ -56,7 +56,7 @@ class user(object):
             self.last_ip = self.ip
             print ("USER: \t\tFound user %s on: " %self.name,self.ip)
             self.last_connected = time.time()
-            #gpio.digitalWrite(user_pin, gpio.HIGH)
+            gpio.digitalWrite(user_pin, gpio.HIGH)
         else:
             print ("USER: \t\tNot Found")
 
@@ -75,7 +75,7 @@ def find_user(period, lock, smartphone):
                smartphone.last_connected = time.time()
            if response != 0 and (time.time() - smartphone.last_connected > 300):
                smartphone.connected = False # if smartphone disconnected change status to begin searching for it again
-               #gpio.digitalWrite(user_pin, gpio.LOW)
+               gpio.digitalWrite(user_pin, gpio.LOW)
            else:
                print("USER:\t\tTime since last connected: ",time.time() - smartphone.last_connected)
         time.sleep(period)

@@ -91,6 +91,13 @@ def run():
     parser.start()
     data.start()
     mac_finder.start()
+    
+    mac_finder.join()
+    present.join()
+    internet.join()
+    #garbage.join()
+    parser.join()
+    data.join()
 
 if __name__ == '__main__':
     lock = threading.Lock()
@@ -103,7 +110,7 @@ if __name__ == '__main__':
     #    for line in users:
     #        column = line.split()
     #        smartphone = user(scripts_path, column[0], column[1])
-    smartphone = user('./', "2c:8a:72:b1:f8:55", "rsmeurer0", "192.168.1.102")
+    smartphone = user('./scripts/', "2c:8a:72:b1:f8:55", "rsmeurer0", "192.168.1.102")
     luminosity = photo_resistor(16)
     temperature = lm35(14)
     presence = presence_sensor(4)
