@@ -22,6 +22,9 @@ class MoteData(object):
             pw = 220 * math.sqrt(raw) * 0.004343
         return (round(pw * 100) / 100)
 
+    def convert_luminosity(raw):
+        lum = ((raw/8192) * 100) - 28
+        return lum
         
 
 class EposMoteIII(object):
@@ -53,6 +56,7 @@ class EposMoteIII(object):
         self.B11_pw = 0
         self.D00_tmp = 0
         self.D01_hum = 0
+        self.D02_lum = 0
 
         self.last_write = 0
         self.INTER_WRITE_TIME = 0.35 # seconds
@@ -138,8 +142,9 @@ class EposMoteIII(object):
             B11 = False
             D00 = False
             D01 = False
+            D02 = False
 
-            while not (A0  and B00 and B01 and B10 and B11 and D00 and D01): #and A1
+            while not (A0  and B00 and B01 and B10 and B11 and D00 and D01 and D02): #and A1
                 gpio.digitalWrite(mote_pin, gpio.HIGH)
                 line = self.mote.readline().decode("utf-8")
                 gpio.digitalWrite(mote_pin, gpio.LOW)
@@ -171,6 +176,9 @@ class EposMoteIII(object):
                     if line[self.coil_byte] == '1':
                         D01_val = line
                         D01 = True
+                    if line[self.coil_byte] == '2':
+                        D02_val = line
+                        D02 = True
                 #if self.debugger:
                     #print ("A0:", A0, "\tA1:", A1, "\tB00:", B00, "\tB01:", B01, "\tB10:", B10, "\tB11:", B11)
 
@@ -193,8 +201,9 @@ class EposMoteIII(object):
             self.B11_pw = MoteData.convert_power(int(B11_val[self.first_byte_msg:self.last_byte_msg],16))
             self.D00_tmp = int(D00_val[self.first_byte_msg:self.last_byte_msg],16)
             self.D01_hum = int(D01_val[self.first_byte_msg:self.last_byte_msg],16)
+            self.D02_lum = MoteData.convert_luminosity(int(D02_val[self.first_byte_msg:self.last_byte_msg],16))
 
-            print ("GATEWAY:\t",self.A0_pw, self.B00_pw, self.B01_pw, self.B10_pw, self.B11_pw, self.D00_tmp, self.D01_hum) #self.A1_pw, 
+            print ("GATEWAY:\t",self.A0_pw, self.B00_pw, self.B01_pw, self.B10_pw, self.B11_pw, self.D00_tmp, self.D01_hum, self.D02_lum) #self.A1_pw, 
             time.sleep(period)
         
 
