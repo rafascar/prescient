@@ -38,7 +38,7 @@ class user(object):
 #            valid = self.validate_ip()
 #            response = 1
 #        else:
-        address = "ping -c 1 " + smartphone.ip + " -q > /dev/null 2> /dev/null"
+        address = ("ping -c 5 " + self.last_ip)
         p = subprocess.Popen(address.split(),stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
         out,err = p.communicate()
         response = p.wait()        

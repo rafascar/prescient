@@ -17,12 +17,12 @@ import threading
 last_time_present = time.time()
 lights_on = False
 
-parse_period = 30
-internet_period = 30 
+parse_period = 1
+internet_period = 3 
 presence_period = 3
-data_period = 40
-garbage_period = 300
-mac_finder_period = 10
+data_period = 10
+garbage_period = 30
+mac_finder_period = 1
 
 
 def dataset_save(period, lock, smartphone, mote):
@@ -53,7 +53,8 @@ def check_presence(period, lock):
     while True:
         present = presence.get_value()
         if smartphone.connected or present:
-            last_time_present = time.time()
+            if present:
+                last_time_present = time.time()
             if lights_on == False:
                 print("GATEWAY: \tTurnning Lights ON now!") 
                 gateway.on(b'A0')
@@ -87,7 +88,7 @@ def run():
 #Start all threads
     present.start()
     internet.start()
-    #garbage.start()
+    garbage.start()
     parser.start()
     data.start()
     mac_finder.start()
@@ -95,7 +96,7 @@ def run():
     mac_finder.join()
     present.join()
     internet.join()
-    #garbage.join()
+    garbage.join()
     parser.join()
     data.join()
 
@@ -105,11 +106,6 @@ if __name__ == '__main__':
     gateway = EposMoteIII()#dev='/dev/ttyUSB0')
     gateway.debug(True)
     gateway.off(b'A0')
-    #gateway.off(b'A1')
-    #with open('./scripts/users.txt') as users:
-    #    for line in users:
-    #        column = line.split()
-    #        smartphone = user(scripts_path, column[0], column[1])
     smartphone = user('./scripts/', "2c:8a:72:b1:f8:55", "rsmeurer0", "192.168.1.102")
     luminosity = photo_resistor(16)
     temperature = lm35(14)

@@ -9,9 +9,9 @@ import time
 import threading
 from wiringx86 import GPIOGalileoGen2 as GPIO
 
-#gpio = GPIO(debug=False)
-#internet_pin = 1
-#gpio.pinMode(internet_pin, gpio.OUTPUT)
+gpio = GPIO(debug=False)
+internet_pin = 1
+gpio.pinMode(internet_pin, gpio.OUTPUT)
 
 
 def check_internet(period, lock):
@@ -26,11 +26,11 @@ def check_internet(period, lock):
 
         if response == 0:
             print ("CONNECTIVITY: \tConnected to internet")
-            #gpio.digitalWrite(internet_pin, gpio.HIGH)
+            gpio.digitalWrite(internet_pin, gpio.HIGH)
     
         else: 
             print("CONNECTIVITY: \tUnable to connect to internet")
-            #gpio.digitalWrite(internet_pin, gpio.LOW)
+            gpio.digitalWrite(internet_pin, gpio.LOW)
 
         time.sleep(period)
 
