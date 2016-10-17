@@ -235,7 +235,9 @@ a:hover {
 .site-footer {
     padding-top: 2rem;
     margin-top: 2rem;
-    border-top: solid 1px #eff0f1; }
+    border-top: solid 1px #eff0f1;
+    background-color: black;
+}
 
 .site-footer-owner {
     display: block;
