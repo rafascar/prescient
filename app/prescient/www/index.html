@@ -165,35 +165,30 @@
             <div data-role="popup" id="myPopup" class="ui-content" style="min-width:350px;">
                 <form method="post" action="demoform.asp">
                     <div>
-                        <h3>Change Environment</h3>
+                        <h3><center>Change Environment</center></h3>
 
                         <div data-role="main">
-                            <label for="desired_lum">Luminosity:</label>
+                            <label for="desired_lum">Dimmer:</label>
                             <input type="range"
+                                   id="desired_lum"
                                    name="desired_lum"
-                                   value="70"
+                                   value="100"
                                    min="0"
-                                   max="100"
+                                   max="99"
                                    step="5"
                                    data-highlight="true"
+                                   oninput="dimmLamps(this.value)" 
+                                   onchange="dimmLamps(this.value)"
                                    >
                         </div>
-                        
+
                         <div style="width: 100%; display:table">
                             <div style="display: table-row">
                                 <div style="width: 50%; display: table-cell; text-align: center" id="A0">
-                                    <label for="flip-1" style="text-align:center">Lamp A0:</label>
-                                    <select name="flip-1" id="flip-1" data-role="slider">
+                                    <label for="flipa0" style="text-align:center">Lamp A0:</label>
+                                    <select name="flipa0" id="flipa0" data-role="slider">
                                         <option value="Off">Off</option>
                                         <option value="On">On</option>
-                                    </select>
-                                </div>
-
-                                <div style="width: 50%; display: table-cell; text-align: center" id="A1">
-                                    <label for="flip-2" style="text-align:center">Lamp A1:</label>
-                                    <select name="flip-2" id="flip-2" data-role="slider">
-                                        <option value="off">Off</option>
-                                        <option value="on">On</option>
                                     </select>
                                 </div>
                             </div>
@@ -204,14 +199,31 @@
                         <div data-role="main">
                             <label for="desired_temp">Temperature:</label>
                             <input type="range"
+                                   id="desired_temp"
                                    name="desired_temp"
-                                   value="23"
+                                   value="20"
                                    min="16"
                                    max="30"
                                    step="1"
                                    data-highlight="true"
+                                   oninput="changeTemp(this.value)" 
+                                   onchange="changeTemp(this.value)"
                                    >
                         </div>
+                        <div style="width: 100%; display:table">
+                            <div style="display: table-row">
+                                <div style="width: 100%; display: table-cell; text-align: center" id="AC">
+                                    <label for="AC" style="text-align:center">Air Conditioning:</label>
+                                    <select name="AC" id="AC" data-role="slider">
+                                        <option value="Off">Off</option>
+                                        <option value="On">On</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="notify()">Include In Training</button>
+
                     </div>
                 </form>
             </div>
@@ -251,68 +263,53 @@
                 <!--LAMP 1 ENERGY CONSUMPTION-->
                 <div data-role="main" class="ui-content">
                     <hr>
-                    <h2><center>Lighting</center></h2>
+                    <h2><center>Luminosity</center></h2>
                     <hr>
                     <div class="ui-grid-a">
                         <div class="ui-block-a">
-                            <div>Lamp 1:</div>
+                            <div>Lamp A0:</div>
                         </div>
                         <div class="ui-block-b">
-                            <div id="showAC"></div>   
+                            <div id="showA0"></div>   
                         </div>
                     </div>
                 </div>
 
-                <!--LAMP 2 ENERGY CONSUMPTION-->
+                <!--POWER OUTLETS CONSUMPTION-->
                 <div data-role="main" class="ui-content">
+                    <hr>
+                    <h2><center>Power Outlets</center></h2>
+                    <hr>
                     <div class="ui-grid-a">
                         <div class="ui-block-a">
-                            <div>Lamp 2:</div>
+                            <div>B00:</div>
                         </div>
                         <div class="ui-block-b">
-                            <div id="showInTemp"></div>
+                            <div id="showB00"></div>   
                         </div>
                     </div>
-                </div>
-
-                <!--LAMP 3 ENERGY CONSUMPTION-->
-                <div data-role="main" class="ui-content">
                     <div class="ui-grid-a">
                         <div class="ui-block-a">
-                            <div>Lamp 3:</div>
+                            <div>B01:</div>
                         </div>
                         <div class="ui-block-b">
-                            <div id="showExTemp"></div>
+                            <div id="showB01"></div>   
                         </div>
                     </div>
-                </div>
-
-                <!--AC CONSUMPTION-->
-                <div data-role="main" class="ui-content">
-                    <hr>
-                    <h2><center>Air Conditioning</center></h2>
-                    <hr>
                     <div class="ui-grid-a">
                         <div class="ui-block-a">
-                            <div>AC 1:</div>
+                            <div>B10:</div>
                         </div>
                         <div class="ui-block-b">
-                            <div id="showAC"></div>   
+                            <div id="showB10"></div>   
                         </div>
                     </div>
-                </div>
-
-                <!--SOCKET ENERGY CONSUMPTION-->
-                <div data-role="main" class="ui-content">
-                    <hr>
-                    <h2><center>Lighting</center></h2>
-                    <hr>
                     <div class="ui-grid-a">
                         <div class="ui-block-a">
-                            <div>Socket 1:</div>
+                            <div>B11:</div>
                         </div>
                         <div class="ui-block-b">
-                            <div id="showAC"></div>   
+                            <div id="showB11"></div>   
                         </div>
                     </div>
                 </div>
@@ -322,52 +319,9 @@
                     <center><h1>Visualization</h1>
                         <hr>
                         <div id='myChart' style="width: 100%; height: 250px;"></div>
-                        <div id='myOtherChart' style="width: 100%; height: 250px;"></div>
                         </div>
                 </div>
 
-                <a href="#energyPopup" data-rel="popup" class="ui-btn">Turn On/Off</a>
-
-                <div data-role="popup" id="energyPopup" class="ui-content" style="min-width:350px;">
-                    <form method="post" action="demoform.asp">
-                        <div>
-                            <h3>Turn On/Off</h3>
-                            <div data-role="main">
-                                <label for="lamp1">Lamp 1:</label>
-                                <select name="lamp1" id="lamp1" data-role="slider">
-                                    <option value="off">Off</option>
-                                    <option value="on">On</option>
-                                </select> 
-
-                                <label for="lamp2">Lamp 2:</label>
-                                <select name="lamp2" id="lamp2" data-role="slider">
-                                    <option value="off">Off</option>
-                                    <option value="on">On</option>
-                                </select> 
-                                <label for="lamp3">Lamp 3:</label>
-                                <select name="lamp3" id="lamp3" data-role="slider">
-                                    <option value="off">Off</option>
-                                    <option value="on">On</option>
-                                </select> 
-
-                                <label for="acSwitch">AC:</label>
-                                <select name="acSwitch" id="acSwitch" data-role="slider">
-                                    <option value="off">Off</option>
-                                    <option value="on">On</option>
-                                </select> 
-
-                                <label for="socket1">Socket 1:</label>
-                                <select name="socket1" id="socket1" data-role="slider">
-                                    <option value="off">Off</option>
-                                    <option value="on">On</option>
-                                </select> 
-
-                            </div>
-
-                            <input type="button" value="Apply Changes">
-                        </div>
-                    </form>
-                </div>
 
             </div>
 
