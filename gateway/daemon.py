@@ -11,8 +11,37 @@ from sensors.mote.epos_mote_III import *
 from sensors.temperature.lm35 import lm35
 from sensors.luminosity.photo_resistor import photo_resistor
 from sensors.presence.presence_sensor import presence_sensor
+from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
 import datetime
 import threading
+import json
+
+class data(object):
+    def __init__(self):
+        self.year = ''
+        self.month = ''
+        self.day = ''
+        self.hour = ''
+        self.minute = ''
+        self.weekday = ''
+        self.smartphone = ''
+        self.A0_pw = ''
+        self.B00_pw = ''
+        self.B01_pw = ''
+        self.B10_pw = ''
+        self.B11_pw = ''
+        self.external_temp = ''
+        self.humidity = ''
+        self.external_lum = ''
+        self.present = ''
+        self.internal_temp = ''
+        self.internal_lum = ''
+
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
+# ==================================================== GLOBAL =======================================
 
 last_time_present = time.time()
 lights_on = False
@@ -23,27 +52,53 @@ presence_period = 3
 data_period = 10
 garbage_period = 30
 mac_finder_period = 1
+predict_period = 1
 
 
+# ==================================================== LOCAL THREADS =======================================
 def dataset_save(period, lock, smartphone, mote):
     while True:
+        date = datetime.datetime.today()
+        current_data.year = str(date.year)
+        current_data.month = str(date.month)
+        current_data.day = str(date.day)
+        current_data.hour = str(date.hour)
+        current_data.minute = str(date.minute)
+        current_data.weekday = str(datetime.datetime.today().weekday())
+        current_data.smartphone = str(smartphone.connected)   
+        current_data.A0_pw = str(mote.A0_pw)
+        current_data.B00_pw = str(mote.B00_pw)
+        current_data.B01_pw = str(mote.B01_pw)
+        current_data.B10_pw = str(mote.B10_pw)
+        current_data.B11_pw = str(mote.B11_pw)
+        current_data.external_temp = str(mote.D00_tmp)
+        current_data.humidity = str(mote.D01_hum)
+        current_data.external_lum = str(mote.D02_lum)
+        current_data.present = str(presence.get_value())
+        current_data.internal_temp = str(temperature.get_value())
+        current_data.internal_lum = str(luminosity.get_value()) 
+
         print("DATA LOGGER:\tStarting Now")
         with open('dataset.csv', 'a+') as dataset:
-            dataset.write(str(datetime.datetime.today()) + ',' + \
-                    str(datetime.datetime.today().weekday()) + ',' + \
-                    str(smartphone.connected) + ',' + \
-                    str(mote.A0_pw) + ',' + \
-                    #str(mote.A1_pw) + ',' + \
-                    str(mote.B00_pw) + ',' + \
-                    str(mote.B01_pw) + ',' + \
-                    str(mote.B10_pw) + ',' + \
-                    str(mote.B11_pw) + ',' + \
-                    str(mote.D00_tmp) + ',' + \
-                    str(mote.D01_hum) + ',' + \
-                    str(mote.D02_lum) + ',' + \
-                    str(presence.get_value()) + ',' + \
-                    str(temperature.get_value()) + ',' + \
-                    str(luminosity.get_value()) + '\n')
+            dataset.write(
+                    current_data.year + ',' + \
+                            current_data.month + ',' + \
+                            current_data.day + ',' + \
+                            current_data.hour + ',' + \
+                            current_data.minute + ',' + \
+                            current_data.weekday + ',' + \
+                            current_data.smartphone + ',' + \
+                            current_data.A0_pw + ',' + \
+                            current_data.B00_pw + ',' + \
+                            current_data.B01_pw + ',' + \
+                            current_data.B10_pw + ',' + \
+                            current_data.B11_pw + ',' + \
+                            current_data.external_temp + ',' + \
+                            current_data.humidity + ',' + \
+                            current_data.external_lum + ',' + \
+                            current_data.present  + ',' + \
+                            current_data.internal_temp + ',' + \
+                            current_data.internal_lum + '\n')
             print("DATA LOGGER: \tData successfully logged @ %s!" %str(datetime.datetime.today()))
         time.sleep(period)
 
@@ -65,7 +120,6 @@ def check_presence(period, lock):
             if lights_on:
                 print("GATEWAY: \tTurnning Lights OFF now!")
                 gateway.off(b'A0')
-                #gateway.off(b'A1')
                 lights_on = False
         time.sleep(period)
 
@@ -75,24 +129,59 @@ def clean_garbage(period, lock):
         print(threading.activeCount())
         time.sleep(period)
 
+
+def predict():
+    print("I'm Smart")
+
+
+
+#====================================================== FLASK ==============================================
+app = Flask(__name__)
+CORS(app)
+
+@app.route("/")
+def home():
+    return ("Hello World!")
+
+
+@app.route("/lamps", methods=['GET', 'OPTIONS'])
+def turn_on():
+    ret_data = request.args.get('turnOn')
+    print (ret_data)
+    if ret_data == "On":
+        gateway.on(b'A0')
+        return ("Success Turning On!")
+    elif ret_data == "Off":
+        gateway.off(b'A0')
+        return ("Success Turning Off!")
+    else:
+        return ("Error")
+
+@app.route("/dimmer", methods=['GET'])
+@cross_origin(origin='*', headers=['Content- Type', 'Authorization'])
+def dimm_lamp():
+    dimmer = request.args.get('dimmer')
+    print (dimmer)
+    set_dimmer = dimmer.encode("utf-8")
+    gateway.dimmer(b'A0', set_dimmer)
+    return "Success"
+
+@app.route("/query_data", methods=['GET'])
+@cross_origin(origin='*', headers=['Content- Type', 'Authorization'])
+def refresh():
+    return current_data.to_json()
+
+#================================================== run() =================================================
 def run():
-    present = threading.Thread(target=check_presence, args=(presence_period, lock))
-    internet = threading.Thread(target=check_internet, args=(internet_period, lock))
-    parser = threading.Thread(target=gateway.parse_data, args=(parse_period, lock))
-    garbage = threading.Thread(target=clean_garbage, args=(garbage_period, lock))
-    data = threading.Thread(target=dataset_save, args=(data_period, lock, smartphone, gateway))
-    mac_finder = threading.Thread(target=find_user, args=(mac_finder_period, lock, smartphone))
-
-
-
-#Start all threads
+    #Start all threads
+    application.start()
     present.start()
     internet.start()
     garbage.start()
     parser.start()
     data.start()
     mac_finder.start()
-    
+
     mac_finder.join()
     present.join()
     internet.join()
@@ -100,19 +189,36 @@ def run():
     parser.join()
     data.join()
 
+#=================================================== MAIN =================================================
 if __name__ == '__main__':
-    lock = threading.Lock()
+    # Initialize Flask Application handler on localhost:8000
+
+    #app.run(host= '0.0.0.0', port=8080, debug=True)
+    # Set up relative script path
     scripts_path = './scripts/'
-    gateway = EposMoteIII()#dev='/dev/ttyUSB0')
+    # Create Gateway with EPOSMoteIII
+    gateway = EposMoteIII() #dev='/dev/ttyUSB0')
     gateway.debug(True)
     gateway.off(b'A0')
+    # Creates an global object that is available for data quering
+    current_data = data()
+    # Create Smartphone User
     smartphone = user('./scripts/', "2c:8a:72:b1:f8:55", "rsmeurer0", "192.168.1.102")
+    # Instantiate Sensors
     luminosity = photo_resistor(16)
     temperature = lm35(14)
     presence = presence_sensor(4)
-    try:
-        run()
+    # Create Lock for thread sinchronism
+    lock = threading.Lock()
 
-    except KeyboardInterrupt: 
-        print("Getting out of the way") 
-        gpio.cleanup()
+    # Create Threads
+    application = threading.Thread(target=app.run, kwargs={'host':'0.0.0.0', 'port': 8080})
+    present = threading.Thread(target=check_presence, args=(presence_period, lock))
+    internet = threading.Thread(target=check_internet, args=(internet_period, lock))
+    parser = threading.Thread(target=gateway.parse_data, args=(parse_period, lock))
+    garbage = threading.Thread(target=clean_garbage, args=(garbage_period, lock))
+    data = threading.Thread(target=dataset_save, args=(data_period, lock, smartphone, gateway))
+    mac_finder = threading.Thread(target=find_user, args=(mac_finder_period, lock, smartphone))
+    prescient_t = threading.Thread(target=predict)
+
+    run()
